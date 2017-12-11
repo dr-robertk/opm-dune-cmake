@@ -43,7 +43,6 @@ if(opm-common_DIR AND NOT IS_DIRECTORY ${opm-common_DIR})
     " opm-common_DIR is not a directory")
 endif()
 
-
 # Set CMP0053 (how to handle escape sequences in strings) to the new
 # behavior to avoid a pretty annoying cmake warning if a library is
 # defined in the toplevel CMakeLists.txt. This should probably be
@@ -94,7 +93,7 @@ if(opm-data_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
 endif()
 
-opm_recusive_copy_testdata("tests/*.data" "tests/*.DATA" "tests/VFP*")
+opm_recusive_copy_testdata("tests/*.param" "tests/*.data" "tests/*.DATA" "tests/VFP*")
 
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)
