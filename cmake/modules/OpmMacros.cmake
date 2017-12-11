@@ -280,6 +280,7 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
 
   # if list of source files it not empty then build library
   if(MAIN_SOURCE_FILES)
+    message("Adding library ${LIBNAME}")
     dune_add_library("${LIBNAME}"
       SOURCES "${MAIN_SOURCE_FILES}"
       )
