@@ -296,6 +296,10 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
     opm_add_application( ${EXEC_NAME} SOURCES ${FILE_NAME} )
   endforeach()
 
+  # find the packages needed to compile the module
+  # find_package(Boost COMPONENTS unit_test_framework  REQUIRED)
+  find_package(Boost COMPONENTS unit_test_framework)
+
   # add tests from list of test files
   foreach( FILE_NAME ${TEST_SOURCE_FILES} )
     # extract executable name
