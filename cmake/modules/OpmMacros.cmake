@@ -278,9 +278,12 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
   # include list with source files and executables
   include(${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake)
 
-  dune_add_library("${LIBNAME}"
-    SOURCES "${MAIN_SOURCE_FILES}"
-    )
+  # if list of source files it not empty then build library
+  if(MAIN_SOURCE_FILES)
+    dune_add_library("${LIBNAME}"
+      SOURCES "${MAIN_SOURCE_FILES}"
+      )
+  endif()
 
   # add header for installation
   foreach( HEADER ${PUBLIC_HEADER_FILES})
