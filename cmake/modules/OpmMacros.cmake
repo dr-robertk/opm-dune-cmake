@@ -345,6 +345,10 @@ endmacro()
 # create module.pc.in file
 macro(opm_create_pc_in_file MODULE_NAME)
   set(MODULE_PC_IN_FILE "${CMAKE_SOURCE_DIR}/${MODULE_NAME}.pc.in")
+  set(LIB_STR "-L\$\{libdir\}")
+  if(${MODULE_NAME} STREQUAL "opm-material" OR ${MODULE_NAME} STREQUAL "ewoms")
+    set(LIB_STR "" )
+  endif()
   if(NOT EXISTS ${MODULE_PC_IN_FILE})
     set( MODULE_PC_IN_FILE_CONTENT "prefix=@prefix@
 exec_prefix=@exec_prefix@
@@ -358,7 +362,7 @@ Version: @VERSION@
 Description: The ${MODULE_NAME} module
 URL: http://www.opm-project.org/
 Requires: \$\{DEPENDENCIES\}
-Libs: -L\$\{libdir\}
+Libs: ${LIB_STR}
 Cflags: -I\$\{includedir\}" )
 # write file
 file(WRITE ${MODULE_PC_IN_FILE} "${MODULE_PC_IN_FILE_CONTENT}")
