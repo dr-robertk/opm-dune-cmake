@@ -304,12 +304,14 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
   # find_package(Boost COMPONENTS unit_test_framework  REQUIRED)
   find_package(Boost COMPONENTS unit_test_framework)
 
-  # add tests from list of test files
-  foreach( FILE_NAME ${TEST_SOURCE_FILES} )
-    # extract executable name
-    get_filename_component(EXEC_NAME ${FILE_NAME} NAME_WE)
-    opm_add_test( ${EXEC_NAME} SOURCES "${FILE_NAME}" LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
-  endforeach()
+  # add tests from list of test files if boost was found (otherwise disable)
+  if(Boost_FOUND)
+    foreach( FILE_NAME ${TEST_SOURCE_FILES} )
+      # extract executable name
+      get_filename_component(EXEC_NAME ${FILE_NAME} NAME_WE)
+      opm_add_test( ${EXEC_NAME} SOURCES "${FILE_NAME}" LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
+    endforeach()
+  endif()
 endmacro()
 
 macro(opm_recusive_copy_testdata)
