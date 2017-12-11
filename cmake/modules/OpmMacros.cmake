@@ -334,3 +334,26 @@ macro(opm_export_cmake_modules)
     install(FILES "${CM_MOD}" DESTINATION "${DUNE_INSTALL_MODULEDIR}")
   endforeach()
 endmacro()
+
+# create module.pc.in file
+macro(opm_create_pc_in_file MODULE_NAME)
+  set(MODULE_PC_IN_FILE "${CMAKE_SOURCE_DIR}/${MODULE_NAME}.pc.in")
+  if(NOT EXISTS ${MODULE_PC_IN_FILE})
+    set( MODULE_PC_IN_FILE_CONTENT "prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+CXX=@CXX@
+CC=@CC@
+DEPENDENCIES=@REQUIRES@\n
+Name: @PACKAGE_NAME@
+Version: @VERSION@
+Description: The ${MODULE_NAME} module
+URL: http://www.opm-project.org/
+Requires: \$\{DEPENDENCIES\}
+Libs: -L\$\{libdir\}
+Cflags: -I\$\{includedir\}" )
+# write file
+file(WRITE ${MODULE_PC_IN_FILE} "${MODULE_PC_IN_FILE_CONTENT}")
+endif()
+endmacro()

@@ -4,11 +4,11 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-get_filename_component(_module_dir_name ${CMAKE_SOURCE_DIR} NAME)
-message("Building module ${_module_dir_name}")
+get_filename_component(MODULE_NAME ${CMAKE_SOURCE_DIR} NAME)
+message("Building module ${MODULE_NAME}")
 
 # set up project and specify the minimum cmake version
-project("${_module_dir_name}" C CXX)
+project("${MODULE_NAME}" C CXX)
 
 # Sibling build
 option(SIBLING_SEARCH "Search for other modules in sibling directories?" ON)
@@ -61,20 +61,22 @@ list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH}
 # include the dune macros
 include(DuneMacros)
 
-# start a dune project with information from dune.module
-dune_project()
-
 # include the OPM cmake macros
 include(OpmMacros)
+
+opm_create_pc_in_file("${MODULE_NAME}")
+
+# start a dune project with information from dune.module
+dune_project()
 
 find_package(PlainOpmData)
 find_package(OpmOutputUtils)
 
 # add source files from CMakeLists_files.cmake to library and create executables
-opm_add_headers_library_and_executables( "${_module_dir_name}")
+opm_add_headers_library_and_executables( "${MODULE_NAME}")
 
 # download Eigen if user doesn't have the correct version
-if (${_module_dir_name} STREQUAL "opm-simulators")
+if (${MODULE_NAME} STREQUAL "opm-simulators")
 if (NOT EIGEN3_FOUND)
         message (STATUS "Downloading Eigen3")
         include (ExternalProject)
