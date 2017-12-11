@@ -361,7 +361,10 @@ endmacro()
 # create config.h.cmake file
 macro(opm_create_config_h_cmake_file MODULE_NAME)
   set(MODULE_CONFIG_IN_FILE "${CMAKE_SOURCE_DIR}/config.h.cmake")
-  string (TOUPPER "${MODULE_NAME}" MODULE_NAME_UPPER)
+  string (TOUPPER "${MODULE_NAME}" MODULE_NAME_TMP)
+  # replace and "-" with "_", e.g. OPM-SIMULATORS --> OPM_SIMULATORS
+  string(REGEX REPLACE "\\-" "_" MODULE_NAME_UPPER ${MODULE_NAME_TMP})
+
   if(NOT EXISTS ${MODULE_CONFIG_IN_FILE})
     set( MODULE_CONFIG_IN_FILE_CONTENT "/* begin ${MODULE_NAME}
    put the definitions for config.h specific to
@@ -384,17 +387,17 @@ macro(opm_create_config_h_cmake_file MODULE_NAME)
 /* Define to the version of this package. */
 #define PACKAGE_VERSION \"@DUNE_MOD_VERSION@\"\n
 /* end private */\n
-/* Define to the version of opm-material */
-#define ${MODULE_NAME_UPPER}_VERSION \"\$\{OPM_MATERIAL_VERSION\}\"\n
-/* Define to the major version of opm-material */
-#define ${MODULE_NAME_UPPER}_VERSION_MAJOR \$\{OPM_MATERIAL_VERSION_MAJOR\}\n
-/* Define to the minor version of opm-material */
-#define ${MODULE_NAME_UPPER}_VERSION_MINOR \$\{OPM_MATERIAL_VERSION_MINOR\}\n
-/* Define to the revision of opm-material */
-#define ${MODULE_NAME_UPPER}_VERSION_REVISION \$\{OPM_MATERIAL_VERSION_REVISION\}\n
-/* begin bottom */
-/* end bottom */
-/* end opm-material */")
+/* Define to the version of ${MODULE_NAME} */
+#define ${MODULE_NAME_UPPER}_VERSION \"\$\{${MODULE_NAME_UPPER}_VERSION\}\"\n
+/* Define to the major version of ${MODULE_NAME} */
+#define ${MODULE_NAME_UPPER}_VERSION_MAJOR \$\{${MODULE_NAME_UPPER}_VERSION_MAJOR\}\n
+/* Define to the minor version of ${MODULE_NAME} */
+#define ${MODULE_NAME_UPPER}_VERSION_MINOR \$\{${MODULE_NAME_UPPER}_VERSION_MINOR\}\n
+/* Define to the revision of ${MODULE_NAME} */
+#define ${MODULE_NAME_UPPER}_VERSION_REVISION \$\{${MODULE_NAME_UPPER}_VERSION_REVISION\}\n
+/* begin bottom */\n
+/* end bottom */\n
+/* end ${MODULE_NAME} */")
 
 # write file
 file(WRITE ${MODULE_CONFIG_IN_FILE} "${MODULE_CONFIG_IN_FILE_CONTENT}")
