@@ -43,6 +43,13 @@ if(opm-common_DIR AND NOT IS_DIRECTORY ${opm-common_DIR})
     " opm-common_DIR is not a directory")
 endif()
 
+# for ewoms
+set(OPM_GRID_FOUND ${opm_grid_FOUND})
+set(OPM_CORE_FOUND ${opm_core_FOUND})
+set(OPM_PARSER_FOUND ${opm_parser_FOUND})
+
+message("opm grid = ${OPM_GRID_FOUND} ${opm_grid_FOUND}")
+
 # Set CMP0053 (how to handle escape sequences in strings) to the new
 # behavior to avoid a pretty annoying cmake warning if a library is
 # defined in the toplevel CMakeLists.txt. This should probably be
@@ -65,6 +72,7 @@ include(DuneMacros)
 include(OpmMacros)
 
 opm_create_pc_in_file("${MODULE_NAME}")
+opm_create_config_h_cmake_file("${MODULE_NAME}")
 
 # start a dune project with information from dune.module
 dune_project()
@@ -74,6 +82,13 @@ find_package(OpmOutputUtils)
 
 # add source files from CMakeLists_files.cmake to library and create executables
 opm_add_headers_library_and_executables( "${MODULE_NAME}")
+
+# set found flags for ebos exec
+if (${MODULE_NAME} STREQUAL "ewoms")
+  set(OPM_CORE_FOUND TRUE)
+  set(OPM_GRID_FOUND TRUE)
+  set(OPM_PARSER_FOUND TRUE)
+endif ()
 
 # download Eigen if user doesn't have the correct version
 if (${MODULE_NAME} STREQUAL "opm-simulators")

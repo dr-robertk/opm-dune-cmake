@@ -357,3 +357,46 @@ Cflags: -I\$\{includedir\}" )
 file(WRITE ${MODULE_PC_IN_FILE} "${MODULE_PC_IN_FILE_CONTENT}")
 endif()
 endmacro()
+
+# create config.h.cmake file
+macro(opm_create_config_h_cmake_file MODULE_NAME)
+  set(MODULE_CONFIG_IN_FILE "${CMAKE_SOURCE_DIR}/config.h.cmake")
+  string (TOUPPER "${MODULE_NAME}" MODULE_NAME_UPPER)
+  if(NOT EXISTS ${MODULE_CONFIG_IN_FILE})
+    set( MODULE_CONFIG_IN_FILE_CONTENT "/* begin ${MODULE_NAME}
+   put the definitions for config.h specific to
+   your project here. Everything above will be
+   overwritten
+*/
+/* begin private */
+/* Name of package */
+
+/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT \"@DUNE_MAINTAINER@\"
+/* Define to the full name of this package. */
+#define PACKAGE_NAME \"@DUNE_MOD_NAME@\"\n
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING \"@DUNE_MOD_NAME@ @DUNE_MOD_VERSION@\"\n
+/* Define to the one symbol short name of this package. */
+#define PACKAGE_TARNAME \"@DUNE_MOD_NAME@\"\n
+/* Define to the home page for this package. */
+#define PACKAGE_URL \"@DUNE_MOD_URL@\"\n
+/* Define to the version of this package. */
+#define PACKAGE_VERSION \"@DUNE_MOD_VERSION@\"\n
+/* end private */\n
+/* Define to the version of opm-material */
+#define ${MODULE_NAME_UPPER}_VERSION \"\$\{OPM_MATERIAL_VERSION\}\"\n
+/* Define to the major version of opm-material */
+#define ${MODULE_NAME_UPPER}_VERSION_MAJOR \$\{OPM_MATERIAL_VERSION_MAJOR\}\n
+/* Define to the minor version of opm-material */
+#define ${MODULE_NAME_UPPER}_VERSION_MINOR \$\{OPM_MATERIAL_VERSION_MINOR\}\n
+/* Define to the revision of opm-material */
+#define ${MODULE_NAME_UPPER}_VERSION_REVISION \$\{OPM_MATERIAL_VERSION_REVISION\}\n
+/* begin bottom */
+/* end bottom */
+/* end opm-material */")
+
+# write file
+file(WRITE ${MODULE_CONFIG_IN_FILE} "${MODULE_CONFIG_IN_FILE_CONTENT}")
+endif()
+endmacro()
