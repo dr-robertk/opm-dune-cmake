@@ -3,10 +3,11 @@
 ########################################
 cmake_minimum_required(VERSION 3.0)
 
-#message("build dir = ${CMAKE_BINARY_DIR}")
+message("build dir = ${CMAKE_BINARY_DIR}")
+message("build dir = ${CMAKE_CURRENT_SOURCE_DIR}")
 if(DEFINED ENV{ORIGINAL_PROJECT_SOURCE_DIR})
   list(APPEND CMAKE_MODULE_PATH $ENV{ORIGINAL_PROJECT_SOURCE_DIR})
-  #  set(CMAKE_BINARY_DIR $ENV{ORIGINAL_PROJECT_SOURCE_DIR})
+  #set(CMAKE_BINARY_DIR $ENV{ORIGINAL_PROJECT_SOURCE_DIR})
 endif()
 
 get_filename_component(MODULE_NAME ${CMAKE_SOURCE_DIR} NAME)
