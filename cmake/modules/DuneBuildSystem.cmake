@@ -1,11 +1,16 @@
 ########################################
 # use DUNE's build system to build OPM
 ########################################
-
 cmake_minimum_required(VERSION 3.0)
 
+#message("build dir = ${CMAKE_BINARY_DIR}")
+if(DEFINED ENV{ORIGINAL_PROJECT_SOURCE_DIR})
+  list(APPEND CMAKE_MODULE_PATH $ENV{ORIGINAL_PROJECT_SOURCE_DIR})
+  #  set(CMAKE_BINARY_DIR $ENV{ORIGINAL_PROJECT_SOURCE_DIR})
+endif()
+
 get_filename_component(MODULE_NAME ${CMAKE_SOURCE_DIR} NAME)
-message("Building module ${MODULE_NAME}")
+message("Building module ${MODULE_NAME} using DUNE build system.")
 
 # set up project and specify the minimum cmake version
 project("${MODULE_NAME}" C CXX)
@@ -48,7 +53,7 @@ set(OPM_GRID_FOUND ${opm_grid_FOUND})
 set(OPM_CORE_FOUND ${opm_core_FOUND})
 set(OPM_PARSER_FOUND ${opm_parser_FOUND})
 
-message("opm grid = ${OPM_GRID_FOUND} ${opm_grid_FOUND}")
+#message("opm grid = ${OPM_GRID_FOUND} ${opm_grid_FOUND}")
 
 # Set CMP0053 (how to handle escape sequences in strings) to the new
 # behavior to avoid a pretty annoying cmake warning if a library is
