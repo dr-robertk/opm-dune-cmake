@@ -263,11 +263,7 @@ endmacro()
 
 # add all source files from each modules CMakeLists_files.cmake
 # to the library and executables. Argument is the library name
-macro(opm_add_headers_library_and_executables MODULE_NAME)
-
-  # replace and "-" with "", e.g. opm-common --> opmcommon
-  string(REGEX REPLACE "\\-" "" LIBNAME ${MODULE_NAME})
-
+macro(opm_add_headers_library_and_executables LIBNAME)
   # the cmake modules get a special treatment
   opm_export_cmake_modules()
 
@@ -278,13 +274,11 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
   # include list with source files and executables
   include(${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake)
 
-  # if list of source files it not empty then build library
-  if(MAIN_SOURCE_FILES)
-    message("Adding library ${LIBNAME}")
-    dune_add_library("${LIBNAME}"
-      SOURCES "${MAIN_SOURCE_FILES}"
-      )
-  endif()
+  dune_add_library("${LIBNAME}"
+    SOURCES "${MAIN_SOURCE_FILES}"
+    )
+
+
 
   # add header for installation
   foreach( HEADER ${PUBLIC_HEADER_FILES})
@@ -300,18 +294,12 @@ macro(opm_add_headers_library_and_executables MODULE_NAME)
     opm_add_application( ${EXEC_NAME} SOURCES ${FILE_NAME} )
   endforeach()
 
-  # find the packages needed to compile the module
-  # find_package(Boost COMPONENTS unit_test_framework  REQUIRED)
-  find_package(Boost COMPONENTS unit_test_framework)
-
-  # add tests from list of test files if boost was found (otherwise disable)
-  if(Boost_FOUND)
-    foreach( FILE_NAME ${TEST_SOURCE_FILES} )
-      # extract executable name
-      get_filename_component(EXEC_NAME ${FILE_NAME} NAME_WE)
-      opm_add_test( ${EXEC_NAME} SOURCES "${FILE_NAME}" LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
-    endforeach()
-  endif()
+  # add tests from list of test files
+  foreach( FILE_NAME ${TEST_SOURCE_FILES} )
+    # extract executable name
+    get_filename_component(EXEC_NAME ${FILE_NAME} NAME_WE)
+    opm_add_test( ${EXEC_NAME} SOURCES "${FILE_NAME}" LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
+  endforeach()
 endmacro()
 
 macro(opm_recusive_copy_testdata)
@@ -321,6 +309,17 @@ macro(opm_recusive_copy_testdata)
     foreach(SOURCE_FILE ${TMP})
       get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
       file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIRNAME}")
+    endforeach()
+  endforeach()
+endmacro()
+
+macro(opm_recusive_copy_testdata_to_builddir)
+  foreach(PAT ${ARGN})
+    file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "${PAT}")
+
+    foreach(SOURCE_FILE ${TMP})
+      get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
+      file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/")
     endforeach()
   endforeach()
 endmacro()
@@ -343,77 +342,4 @@ macro(opm_export_cmake_modules)
     get_filename_component(DIRNAME "${CM_MOD}" DIRECTORY)
     install(FILES "${CM_MOD}" DESTINATION "${DUNE_INSTALL_MODULEDIR}")
   endforeach()
-endmacro()
-
-# create module.pc.in file
-macro(opm_create_pc_in_file MODULE_NAME)
-  set(MODULE_PC_IN_FILE "${CMAKE_SOURCE_DIR}/${MODULE_NAME}.pc.in")
-  set(LIB_STR "-L\$\{libdir\}")
-  if(${MODULE_NAME} STREQUAL "opm-material" OR ${MODULE_NAME} STREQUAL "ewoms")
-    set(LIB_STR "" )
-  endif()
-  if(NOT EXISTS ${MODULE_PC_IN_FILE})
-    set( MODULE_PC_IN_FILE_CONTENT "prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
-CXX=@CXX@
-CC=@CC@
-DEPENDENCIES=@REQUIRES@\n
-Name: @PACKAGE_NAME@
-Version: @VERSION@
-Description: The ${MODULE_NAME} module
-URL: http://www.opm-project.org/
-Requires: \$\{DEPENDENCIES\}
-Libs: ${LIB_STR}
-Cflags: -I\$\{includedir\}" )
-# write file
-file(WRITE ${MODULE_PC_IN_FILE} "${MODULE_PC_IN_FILE_CONTENT}")
-endif()
-endmacro()
-
-# create config.h.cmake file
-macro(opm_create_config_h_cmake_file MODULE_NAME)
-  set(MODULE_CONFIG_IN_FILE "${CMAKE_SOURCE_DIR}/config.h.cmake")
-  string (TOUPPER "${MODULE_NAME}" MODULE_NAME_TMP)
-  # replace and "-" with "_", e.g. OPM-SIMULATORS --> OPM_SIMULATORS
-  string(REGEX REPLACE "\\-" "_" MODULE_NAME_UPPER ${MODULE_NAME_TMP})
-
-  if(NOT EXISTS ${MODULE_CONFIG_IN_FILE})
-    set( MODULE_CONFIG_IN_FILE_CONTENT "/* begin ${MODULE_NAME}
-   put the definitions for config.h specific to
-   your project here. Everything above will be
-   overwritten
-*/
-/* begin private */
-/* Name of package */
-
-/* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT \"@DUNE_MAINTAINER@\"
-/* Define to the full name of this package. */
-#define PACKAGE_NAME \"@DUNE_MOD_NAME@\"\n
-/* Define to the full name and version of this package. */
-#define PACKAGE_STRING \"@DUNE_MOD_NAME@ @DUNE_MOD_VERSION@\"\n
-/* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME \"@DUNE_MOD_NAME@\"\n
-/* Define to the home page for this package. */
-#define PACKAGE_URL \"@DUNE_MOD_URL@\"\n
-/* Define to the version of this package. */
-#define PACKAGE_VERSION \"@DUNE_MOD_VERSION@\"\n
-/* end private */\n
-/* Define to the version of ${MODULE_NAME} */
-#define ${MODULE_NAME_UPPER}_VERSION \"\$\{${MODULE_NAME_UPPER}_VERSION\}\"\n
-/* Define to the major version of ${MODULE_NAME} */
-#define ${MODULE_NAME_UPPER}_VERSION_MAJOR \$\{${MODULE_NAME_UPPER}_VERSION_MAJOR\}\n
-/* Define to the minor version of ${MODULE_NAME} */
-#define ${MODULE_NAME_UPPER}_VERSION_MINOR \$\{${MODULE_NAME_UPPER}_VERSION_MINOR\}\n
-/* Define to the revision of ${MODULE_NAME} */
-#define ${MODULE_NAME_UPPER}_VERSION_REVISION \$\{${MODULE_NAME_UPPER}_VERSION_REVISION\}\n
-/* begin bottom */\n
-/* end bottom */\n
-/* end ${MODULE_NAME} */")
-
-# write file
-file(WRITE ${MODULE_CONFIG_IN_FILE} "${MODULE_CONFIG_IN_FILE_CONTENT}")
-endif()
 endmacro()
