@@ -15,11 +15,17 @@ option(BUILD_TESTING "Build the unit tests" OFF)
 option(ADD_DISABLED_CTESTS "Add the tests which are disabled due to failed preconditions to the ctest output (this makes ctest return an error if such a test is present)" ON)
 mark_as_advanced(ADD_DISABLED_CTESTS)
 
-# add a "test-suite" target if it does not already exist
+# add "test-suite" and "build_tests" targets if they does not already
+# exist. the first is used by the OPM-traditional build system to
+# build all tests, the second is used by the DUNE build system for the
+# same purpose
 if(NOT TARGET test-suite)
   add_custom_target(test-suite)
 endif()
 
+if(NOT TARGET build_tests)
+  add_custom_target(build_tests)
+endif()
 
 # Add a single unit test (can be orchestrated by the 'ctest' command)
 #
@@ -205,7 +211,11 @@ macro(opm_add_test TestName)
       if(NOT TARGET test-suite)
         add_custom_target(test-suite)
       endif()
-      add_dependencies(test-suite "${CURTEST_EXE_NAME}")#
+      if(NOT TARGET build_tests)
+        add_custom_target(build_tests)
+      endif()
+      add_dependencies(test-suite "${CURTEST_EXE_NAME}")
+      add_dependencies(build_tests "${CURTEST_EXE_NAME}")
     endif()
 
   else() # test is skipped
