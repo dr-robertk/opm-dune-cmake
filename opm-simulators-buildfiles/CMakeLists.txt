@@ -35,7 +35,8 @@ find_package(OpmOutputUtils)
 # find the packages needed to compile the unit tests
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-# add source files from CMakeLists_files.cmake to library and create executables
+# read source files from CMakeLists_files.cmake, conditionally modify
+# them, and add the library and create executables
 opm_read_listsfile()
 if (NOT SuiteSparse_FOUND)
   list (REMOVE_ITEM examples_SOURCES
