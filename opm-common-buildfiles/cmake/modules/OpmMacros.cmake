@@ -4,6 +4,21 @@
 # all OPM modules
 #
 
+# Set CMP0053 (how to handle escape sequences in strings) and CMP0054
+# (how to handle conditions) to the new behavior to avoid a pretty
+# annoying cmake warning if a library is defined in the toplevel
+# CMakeLists.txt. This should probably be considered to be a bug in
+# the dune build system. Note that the old behaviour will most likely
+# also work fine, but the result of setting this policy to NEW is most
+# likely what's intended.
+if (POLICY CMP0053)
+  cmake_policy(SET CMP0053 NEW)
+endif()
+
+if (POLICY CMP0054)
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
 # Specify the BUILD_TESTING option and set it to off by default. The
 # reason is that builing the unit tests often takes considerable more
 # time than the actual module and that these tests are not interesting
