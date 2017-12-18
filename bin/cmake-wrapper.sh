@@ -61,9 +61,6 @@ function run_cmake_wrapper()
 
     # link everything in the real source directory to the fake one.
     ln -s "$SOURCE_DIR/"* "$FAKE_SOURCE_DIR/"
-    rm -f "$FAKE_SOURCE_DIR/cmake"
-    mkdir -p "$FAKE_SOURCE_DIR/cmake"
-    ln -s "$OPM_CMAKE_DIR/cmake/modules"* "$FAKE_SOURCE_DIR/cmake/"
     for CUR_SRC_FILE in "$OPM_CMAKE_DIR/$MODULE_NAME-buildfiles/"*; do
         CUR_SRC_FILENAME="$(basename "$CUR_SRC_FILE")"
         rm -f "$FAKE_SOURCE_DIR/$CUR_SRC_FILENAME"
