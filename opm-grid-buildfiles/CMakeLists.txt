@@ -32,6 +32,13 @@ include(OpmMacros)
 # find the packages needed to compile the module
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
+# make sure that the HAVE_CONFIG_H C macro evaluates to one instead of
+# being only defined
+get_property(CD_LIST DIRECTORY "." PROPERTY COMPILE_DEFINITIONS)
+list(REMOVE_ITEM CD_LIST "HAVE_CONFIG_H")
+list(APPEND CD_LIST "HAVE_CONFIG_H=1")
+set_property(DIRECTORY "." PROPERTY COMPILE_DEFINITIONS "${CD_LIST}")
+
 # add source files from CMakeLists_files.cmake to
 # library libopmgrid.a and create executables
 opm_add_headers_library_and_executables("opmgrid")

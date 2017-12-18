@@ -36,6 +36,15 @@ find_package(OpmOutputUtils)
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 # add source files from CMakeLists_files.cmake to library and create executables
+opm_read_listsfile()
+if (NOT SuiteSparse_FOUND)
+  list (REMOVE_ITEM examples_SOURCES
+    tutorials/tutorial2.cpp
+    tutorials/tutorial3.cpp
+    tutorials/tutorial4.cpp
+    )
+endif()
+
 opm_add_headers_library_and_executables("opmsimulators")
 
 # download Eigen if user doesn't have the correct version

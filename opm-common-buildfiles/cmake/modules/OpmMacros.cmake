@@ -261,6 +261,16 @@ macro(opm_recursive_add_library LIBNAME)
     )
 endmacro()
 
+set(LISTSFILE_READ FALSE)
+macro(opm_read_listsfile)
+  if (NOT LISTSFILE_READ)
+    set(LISTSFILE_READ TRUE)
+
+    # include list with source files and executables
+    include("${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake")
+  endif()
+endmacro()
+
 # add all source files from each modules CMakeLists_files.cmake
 # to the library and executables. Argument is the library name
 macro(opm_add_headers_library_and_executables LIBNAME)
@@ -271,14 +281,11 @@ macro(opm_add_headers_library_and_executables LIBNAME)
   # thank you!
   dune_enable_all_packages()
 
-  # include list with source files and executables
-  include(${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake)
+  opm_read_listsfile()
 
   dune_add_library("${LIBNAME}"
     SOURCES "${MAIN_SOURCE_FILES}"
     )
-
-
 
   # add header for installation
   foreach( HEADER ${PUBLIC_HEADER_FILES})

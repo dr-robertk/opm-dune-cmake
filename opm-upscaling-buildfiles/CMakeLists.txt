@@ -69,6 +69,13 @@ include(OpmMacros)
 # find the packages needed to compile the module
 find_package(Boost COMPONENTS unit_test_framework iostreams REQUIRED)
 
+# make sure that the HAVE_CONFIG_H C macro evaluates to one instead of
+# being only defined
+get_property(CD_LIST DIRECTORY "." PROPERTY COMPILE_DEFINITIONS)
+list(REMOVE_ITEM CD_LIST "HAVE_CONFIG_H")
+list(APPEND CD_LIST "HAVE_CONFIG_H=1")
+set_property(DIRECTORY "." PROPERTY COMPILE_DEFINITIONS "${CD_LIST}")
+
 # we want all features detected by the build system to be enabled,
 # thank you!
 dune_enable_all_packages()
