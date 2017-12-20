@@ -48,6 +48,13 @@
 /* Define whether valgrind is available */
 #cmakedefine HAVE_VALGRIND 1
 
+/* Specify wheter the pthreads library is available or not. This is supposed */
+/* to be handled by dune-common, but since this seems not to be the case, */
+/* let's work around it here */
+#ifndef HAVE_PTHREAD
+#cmakedefine HAVE_PTHREAD 1
+#endif
+
 /* begin bottom */
 
 /* end bottom */
