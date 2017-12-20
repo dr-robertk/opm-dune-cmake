@@ -1,13 +1,15 @@
 #!/bin/bash
 
 ORIG_FLAGS=( "$@" )
-REAL_CMAKE="$(which cmake)"
+if test -z "$VANILLA_CMAKE"; then
+    VANILLA_CMAKE="$(which cmake)"
+fi
 OPM_CMAKE_DIR="$(readlink -f $(dirname $(which $0))/..)"
 
 # check if we're called with the --build flag. in this case, just use plain cmake
 for FLAG in $ORIG_FLAGS; do
     if test "$FLAG" == "--build"; then
-        exec $REAL_CMAKE "${ORIG_FLAGS[@]}"
+        exec $VANILLA_CMAKE "${ORIG_FLAGS[@]}"
     fi
 done
 
@@ -61,9 +63,6 @@ function run_cmake_wrapper()
 
     # link everything in the real source directory to the fake one.
     ln -s "$SOURCE_DIR/"* "$FAKE_SOURCE_DIR/"
-    rm -f "$FAKE_SOURCE_DIR/cmake"
-    mkdir -p "$FAKE_SOURCE_DIR/cmake"
-    ln -s "$OPM_CMAKE_DIR/cmake/modules"* "$FAKE_SOURCE_DIR/cmake/"
     for CUR_SRC_FILE in "$OPM_CMAKE_DIR/$MODULE_NAME-buildfiles/"*; do
         CUR_SRC_FILENAME="$(basename "$CUR_SRC_FILE")"
         rm -f "$FAKE_SOURCE_DIR/$CUR_SRC_FILENAME"
@@ -90,7 +89,7 @@ EOF
             -DCMAKE_MODULE_PATH=*)
                 # ignore module path arguments
                 ;;
-            
+
             -*)
                 # copy all other flags
                 NEW_FLAGS+=("${FLAG}")
@@ -105,11 +104,11 @@ EOF
     done
 
     echo -n "running bare cmake:"
-    echo -n "$REAL_CMAKE "    
+    echo -n "$VANILLA_CMAKE "
     print_flags "${NEW_FLAGS[@]}"
     echo
 
-    exec $REAL_CMAKE "${NEW_FLAGS[@]}"
+    exec $VANILLA_CMAKE "${NEW_FLAGS[@]}"
     exit 0
 }
 
@@ -132,6 +131,6 @@ case "$MODULE_NAME" in
     *)
         echo "Unrecognized module '$MODULE_NAME' in directory '$SOURCE_DIR'. Using vanilla cmake."
 
-        exec "$REAL_CMAKE" "${ORIG_FLAGS[@]}"
+        exec "$VANILLA_CMAKE" "${ORIG_FLAGS[@]}"
         ;;
 esac

@@ -6,16 +6,6 @@ cmake_minimum_required(VERSION 3.0)
 # set up project and specify the minimum cmake version
 project("opm-grid" C CXX)
 
-# Set CMP0053 (how to handle escape sequences in strings) to the new
-# behavior to avoid a pretty annoying cmake warning if a library is
-# defined in the toplevel CMakeLists.txt. This should probably be
-# considered to be a bug in the dune build system. Note that the old
-# behaviour will most likely also work fine, but the result of setting
-# this policy to NEW is most likely what's intended.
-if (POLICY CMP0053)
-  cmake_policy(SET CMP0053 NEW)
-endif()
-
 # find the build system (i.e., dune-common) and set cmake's module path
 find_package(dune-common REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
@@ -31,6 +21,13 @@ include(OpmMacros)
 
 # find the packages needed to compile the module
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+
+# make sure that the HAVE_CONFIG_H C macro evaluates to one instead of
+# being only defined
+get_property(CD_LIST DIRECTORY "." PROPERTY COMPILE_DEFINITIONS)
+list(REMOVE_ITEM CD_LIST "HAVE_CONFIG_H")
+list(APPEND CD_LIST "HAVE_CONFIG_H=1")
+set_property(DIRECTORY "." PROPERTY COMPILE_DEFINITIONS "${CD_LIST}")
 
 # add source files from CMakeLists_files.cmake to
 # library libopmgrid.a and create executables

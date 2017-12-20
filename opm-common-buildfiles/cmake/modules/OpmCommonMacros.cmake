@@ -25,3 +25,9 @@ if(VALGRIND_FOUND)
   dune_register_package_flags(
     INCLUDE_DIRS "${VALGRIND_INCLUDE_DIR}")
 endif()
+
+# add a work-around for the missing HAVE_PTHREAD config.h
+# variable. the actual threads detection is done by dune-common.
+if (THREADS_HAVE_PTHREAD_ARG)
+  set(HAVE_PTHREAD 1)
+endif()

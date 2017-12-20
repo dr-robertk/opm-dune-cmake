@@ -6,16 +6,6 @@ cmake_minimum_required(VERSION 3.0)
 # set up project and specify the minimum cmake version
 project("opm-core" C CXX)
 
-# Set CMP0053 (how to handle escape sequences in strings) to the new
-# behavior to avoid a pretty annoying cmake warning if a library is
-# defined in the toplevel CMakeLists.txt. This should probably be
-# considered to be a bug in the dune build system. Note that the old
-# behaviour will most likely also work fine, but the result of setting
-# this policy to NEW is most likely what's intended.
-if (POLICY CMP0053)
-  cmake_policy(SET CMP0053 NEW)
-endif()
-
 # find the build system (i.e., dune-common) and set cmake's module path
 find_package(dune-common REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
@@ -32,8 +22,41 @@ include(OpmMacros)
 # find the packages needed to compile the unit tests
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
-# add source files from CMakeLists_files.cmake to
-# library libopmcore.a and create executables
+# make sure that the HAVE_CONFIG_H C macro evaluates to one instead of
+# being only defined
+get_property(CD_LIST DIRECTORY "." PROPERTY COMPILE_DEFINITIONS)
+list(REMOVE_ITEM CD_LIST "HAVE_CONFIG_H")
+list(APPEND CD_LIST "HAVE_CONFIG_H=1")
+set_property(DIRECTORY "." PROPERTY COMPILE_DEFINITIONS "${CD_LIST}")
+
+# read in the file lists of CMakeLists_files.txt and remove the files
+# which should not have been added.
+opm_read_listsfile()
+
+if (NOT MPI_FOUND)
+  list(REMOVE_ITEM TEST_SOURCE_FILES
+    "tests/test_parallel_linearsolver.cpp"
+    "tests/test_parallelistlinformation.cpp"
+    )
+endif()
+
+if (NOT SuiteSparse_FOUND)
+  list (REMOVE_ITEM MAIN_SOURCE_FILES
+    "opm/core/linalg/call_umfpack.c"
+    "opm/core/linalg/LinearSolverUmfpack.cpp"
+    )
+endif()
+
+if (NOT PETSC_FOUND)
+  list (REMOVE_ITEM MAIN_SOURCE_FILES
+    "opm/core/linalg/call_petsc.c"
+    "opm/core/linalg/LinearSolverPetsc.cpp"
+    )
+endif()
+
+
+# add the library and create executables based on the file list from
+# above
 opm_add_headers_library_and_executables("opmcore")
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA")

@@ -4,6 +4,21 @@
 # all OPM modules
 #
 
+# Set CMP0053 (how to handle escape sequences in strings) and CMP0054
+# (how to handle conditions) to the new behavior to avoid a pretty
+# annoying cmake warning if a library is defined in the toplevel
+# CMakeLists.txt. This should probably be considered to be a bug in
+# the dune build system. Note that the old behaviour will most likely
+# also work fine, but the result of setting this policy to NEW is most
+# likely what's intended.
+if (POLICY CMP0053)
+  cmake_policy(SET CMP0053 NEW)
+endif()
+
+if (POLICY CMP0054)
+  cmake_policy(SET CMP0054 NEW)
+endif()
+
 # Specify the BUILD_TESTING option and set it to off by default. The
 # reason is that builing the unit tests often takes considerable more
 # time than the actual module and that these tests are not interesting
@@ -15,11 +30,17 @@ option(BUILD_TESTING "Build the unit tests" OFF)
 option(ADD_DISABLED_CTESTS "Add the tests which are disabled due to failed preconditions to the ctest output (this makes ctest return an error if such a test is present)" ON)
 mark_as_advanced(ADD_DISABLED_CTESTS)
 
-# add a "test-suite" target if it does not already exist
+# add "test-suite" and "build_tests" targets if they does not already
+# exist. the first is used by the OPM-traditional build system to
+# build all tests, the second is used by the DUNE build system for the
+# same purpose
 if(NOT TARGET test-suite)
   add_custom_target(test-suite)
 endif()
 
+if(NOT TARGET build_tests)
+  add_custom_target(build_tests)
+endif()
 
 # Add a single unit test (can be orchestrated by the 'ctest' command)
 #
@@ -205,7 +226,11 @@ macro(opm_add_test TestName)
       if(NOT TARGET test-suite)
         add_custom_target(test-suite)
       endif()
-      add_dependencies(test-suite "${CURTEST_EXE_NAME}")#
+      if(NOT TARGET build_tests)
+        add_custom_target(build_tests)
+      endif()
+      add_dependencies(test-suite "${CURTEST_EXE_NAME}")
+      add_dependencies(build_tests "${CURTEST_EXE_NAME}")
     endif()
 
   else() # test is skipped
@@ -261,6 +286,16 @@ macro(opm_recursive_add_library LIBNAME)
     )
 endmacro()
 
+set(LISTSFILE_READ FALSE)
+macro(opm_read_listsfile)
+  if (NOT LISTSFILE_READ)
+    set(LISTSFILE_READ TRUE)
+
+    # include list with source files and executables
+    include("${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake")
+  endif()
+endmacro()
+
 # add all source files from each modules CMakeLists_files.cmake
 # to the library and executables. Argument is the library name
 macro(opm_add_headers_library_and_executables LIBNAME)
@@ -271,14 +306,11 @@ macro(opm_add_headers_library_and_executables LIBNAME)
   # thank you!
   dune_enable_all_packages()
 
-  # include list with source files and executables
-  include(${CMAKE_SOURCE_DIR}/CMakeLists_files.cmake)
+  opm_read_listsfile()
 
   dune_add_library("${LIBNAME}"
     SOURCES "${MAIN_SOURCE_FILES}"
     )
-
-
 
   # add header for installation
   foreach( HEADER ${PUBLIC_HEADER_FILES})
