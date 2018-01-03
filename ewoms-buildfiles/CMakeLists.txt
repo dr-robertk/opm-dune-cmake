@@ -59,17 +59,12 @@ opm_add_application(ebos
                     EXE_NAME ebos
                     CONDITION opm-grid_FOUND AND opm-parser_FOUND AND opm-core_FOUND)
 
-if(opm-grid_FOUND AND opm-core_FOUND AND opm-parser_FOUND)
-  install(TARGETS ebos DESTINATION bin)
-endif()
-
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
                     SOURCES art2dgf/art2dgf.cc
                     EXE_NAME art2dgf)
 
 add_dependencies(test-suite art2dgf)
-install(TARGETS art2dgf DESTINATION bin)
 
 opm_add_test(art2dgf
   NO_COMPILE

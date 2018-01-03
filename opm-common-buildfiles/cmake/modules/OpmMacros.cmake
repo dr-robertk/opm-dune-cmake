@@ -259,6 +259,10 @@ endmacro()
 #                     [SOURCES SourceFile1 SourceFile2 ...])
 macro(opm_add_application AppName)
   opm_add_test(${AppName} ${ARGN} ALWAYS_ENABLE ONLY_COMPILE)
+
+  if(TARGET "${AppName}")
+    install(TARGETS "${AppName}" DESTINATION bin)
+  endif()
 endmacro()
 
 # macro to set the default test driver script and the its default
