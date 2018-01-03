@@ -57,7 +57,7 @@ opm_set_test_driver("${PROJECT_SOURCE_DIR}/bin/runtest.sh" "--simulation")
 opm_add_application(ebos
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos
-                    CONDITION opm-grid_FOUND AND opm-parser_FOUND AND opm-core_FOUND)
+                    CONDITION opm-grid_FOUND AND opm-parser_FOUND)
 
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
@@ -70,6 +70,11 @@ opm_add_test(art2dgf
   NO_COMPILE
   DRIVER_ARGS --plain
   TEST_ARGS "data/fracture-raw.art")
+
+# EQUIL init tests
+opm_add_test(test_equil
+  DRIVER_ARGS --plain
+  CONDITION opm-grid_FOUND AND opm-parser_FOUND)
 
 # add targets for all tests of the models. we add the water-air test
 # first because it take longest and so that we don't have to wait for
