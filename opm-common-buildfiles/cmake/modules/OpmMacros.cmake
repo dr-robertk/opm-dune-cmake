@@ -77,7 +77,7 @@ include(CMakeParseArguments)
 
 set(DUNE_REENABLE_ADD_TEST "YES")
 
-macro(opm_add_test TestName)
+function(opm_add_test TestName)
   cmake_parse_arguments(CURTEST
                         "NO_COMPILE;ONLY_COMPILE;ALWAYS_ENABLE" # flags
                         "EXE_NAME;PROCESSORS;WORKING_DIRECTORY" # one value args
@@ -246,7 +246,7 @@ macro(opm_add_test TestName)
     endif()
 
   endif()
-endmacro()
+endfunction()
 
 # Add an application. This macro takes the same arguments as
 # opm_add_test() but applications are always compiled if CONDITION
@@ -257,13 +257,13 @@ endmacro()
 #                     [EXE_NAME AppExecutableName]
 #                     [CONDITION ConditionalExpression]
 #                     [SOURCES SourceFile1 SourceFile2 ...])
-macro(opm_add_application AppName)
+function(opm_add_application AppName)
   opm_add_test(${AppName} ${ARGN} ALWAYS_ENABLE ONLY_COMPILE)
 
   if(TARGET "${AppName}")
     install(TARGETS "${AppName}" DESTINATION bin)
   endif()
-endmacro()
+endfunction()
 
 # macro to set the default test driver script and the its default
 # arguments
@@ -278,7 +278,7 @@ macro(opm_set_test_default_working_directory Dir)
   set(OPM_TEST_DEFAULT_WORKING_DIRECTORY "${Dir}")
 endmacro()
 
-macro(opm_recursive_add_library LIBNAME)
+function(opm_recursive_add_library LIBNAME)
   set(TMP2 "")
   foreach(DIR ${ARGN})
     file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "${DIR}/*.cpp" "${DIR}/*.cc" "${DIR}/*.c")
@@ -288,7 +288,7 @@ macro(opm_recursive_add_library LIBNAME)
   dune_add_library("${LIBNAME}"
     SOURCES "${TMP2}"
     )
-endmacro()
+endfunction()
 
 set(LISTSFILE_READ FALSE)
 macro(opm_read_listsfile)
@@ -302,7 +302,7 @@ endmacro()
 
 # add all source files from each modules CMakeLists_files.cmake
 # to the library and executables. Argument is the library name
-macro(opm_add_headers_library_and_executables LIBNAME)
+function(opm_add_headers_library_and_executables LIBNAME)
   # the cmake modules get a special treatment
   opm_export_cmake_modules()
 
@@ -336,9 +336,9 @@ macro(opm_add_headers_library_and_executables LIBNAME)
     get_filename_component(EXEC_NAME ${FILE_NAME} NAME_WE)
     opm_add_test( ${EXEC_NAME} SOURCES "${FILE_NAME}" LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
   endforeach()
-endmacro()
+endfunction()
 
-macro(opm_recusive_copy_testdata)
+function(opm_recusive_copy_testdata)
   foreach(PAT ${ARGN})
     file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "${PAT}")
 
@@ -347,9 +347,9 @@ macro(opm_recusive_copy_testdata)
       file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIRNAME}")
     endforeach()
   endforeach()
-endmacro()
+endfunction()
 
-macro(opm_recusive_copy_testdata_to_builddir)
+function(opm_recusive_copy_testdata_to_builddir)
   foreach(PAT ${ARGN})
     file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "${PAT}")
 
@@ -358,9 +358,9 @@ macro(opm_recusive_copy_testdata_to_builddir)
       file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/")
     endforeach()
   endforeach()
-endmacro()
+endfunction()
 
-macro(opm_recusive_export_all_headers)
+function(opm_recusive_export_all_headers)
   foreach(DIR ${ARGN})
     file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "${DIR}/*.hpp" "${DIR}/*.hh" "${DIR}/*.h")
 
@@ -369,13 +369,13 @@ macro(opm_recusive_export_all_headers)
       install(FILES "${HEADER}" DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${DIRNAME}")
     endforeach()
   endforeach()
-endmacro()
+endfunction()
 
-macro(opm_export_cmake_modules)
+function(opm_export_cmake_modules)
   file(GLOB_RECURSE TMP RELATIVE "${CMAKE_SOURCE_DIR}" "cmake/*.cmake")
 
   foreach(CM_MOD ${TMP})
     get_filename_component(DIRNAME "${CM_MOD}" DIRECTORY)
     install(FILES "${CM_MOD}" DESTINATION "${DUNE_INSTALL_MODULEDIR}")
   endforeach()
-endmacro()
+endfunction()
