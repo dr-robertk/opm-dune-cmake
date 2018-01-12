@@ -47,6 +47,7 @@ opm_add_application(upscale_relperm_benchmark SOURCES benchmarks/upscale_relperm
   LIBRARIES "${Boost_LIBRARIES}" INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
 
 # setup extra tests (using helper binaries)
+add_custom_target(datafiles)
 include (${CMAKE_CURRENT_SOURCE_DIR}/compareUpscaling.cmake)
 
 # encode test cases so they can be embedded in the benchmark executables
@@ -56,6 +57,9 @@ include(EmbedCases.cmake)
 include(OpmStaticTargets)
 opm_from_git(${PROJECT_SOURCE_DIR} benchmarks ${VCS_SHA1} benchmarks)
 add_dependencies(benchmarks-static opm-grid-static)
+
+# copy the data files
+opm_recusive_copy_testdata("tests/*.grdecl" "tests/*.txt")
 
 # Copy static benchmarks to main project binary directory
 foreach(benchmark ${OPM_BENCHMARKS})
