@@ -28,8 +28,24 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 # read source files from CMakeLists_files.cmake, conditionally modify
 # them, and add the library and create executables
 opm_read_listsfile()
+
+if (NOT MPI_FOUND)
+  list(REMOVE_ITEM TEST_SOURCE_FILES
+    tests/test_parallel_linearsolver.cpp
+    tests/test_parallelistlinformation.cpp
+    )
+endif()
+
+if (NOT PETSC_FOUND)
+  list (REMOVE_ITEM MAIN_SOURCE_FILES
+    opm/core/linalg/LinearSolverPetsc.cpp
+    )
+endif()
+
 if (NOT SuiteSparse_FOUND)
-  list (REMOVE_ITEM examples_SOURCES
+  list (REMOVE_ITEM MAIN_SOURCE_FILES
+    opm/core/linalg/call_umfpack.c
+    opm/core/linalg/LinearSolverUmfpack.cpp
     tutorials/tutorial2.cpp
     tutorials/tutorial3.cpp
     tutorials/tutorial4.cpp
