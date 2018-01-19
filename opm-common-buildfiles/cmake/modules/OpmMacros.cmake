@@ -27,6 +27,9 @@ endif()
 # system makes sure that the unit tests pass, though.
 option(BUILD_TESTING "Build the unit tests" OFF)
 
+# Specifies wheter the applications should be build by default or not
+option(BUILD_APPLICATIONS "Build the applications shipped with this module" ON)
+
 option(ADD_DISABLED_CTESTS "Add the tests which are disabled due to failed preconditions to the ctest output (this makes ctest return an error if such a test is present)" ON)
 mark_as_advanced(ADD_DISABLED_CTESTS)
 
@@ -42,6 +45,17 @@ if(NOT TARGET build_tests)
   add_custom_target(build_tests)
 endif()
 
+# add "apps" and "application" targets if they does not already
+# exist. these targets are analogous to "test-suite" and "build_tests"
+# but for applications instead of for tests.
+if(NOT TARGET apps)
+  add_custom_target(apps)
+endif()
+
+if(NOT TARGET applications)
+  add_custom_target(applications)
+endif()
+
 # Add a single unit test (can be orchestrated by the 'ctest' command)
 #
 # Synopsis:
@@ -50,7 +64,7 @@ endif()
 # Parameters:
 #       TestName           Name of test
 #       ONLY_COMPILE       Only build test but do not run it (optional)
-#       ALWAYS_ENABLE      Force enabling test even if -DBUILD_TESTING=OFF was set (optional)
+#       DEFAULT_ENABLE_IF  Only enable by default if a given condition is true (optional)
 #       EXE_NAME           Name of test executable (optional, default: ./bin/${TestName})
 #       CONDITION          Condition to enable test (optional, cmake code)
 #       DEPENDS            Targets which the test depends on (optional)
@@ -67,7 +81,7 @@ endif()
 # Example:
 #
 # opm_add_test(funky_test
-#              ALWAYS_ENABLE
+#              DEFAULT_ENABLE_IF TRUE
 #              CONDITION FUNKY_GRID_FOUND
 #              SOURCES tests/MyFunkyTest.cpp
 #              LIBRARIES -lgmp -lm)
@@ -79,9 +93,9 @@ set(DUNE_REENABLE_ADD_TEST "YES")
 
 function(opm_add_test TestName)
   cmake_parse_arguments(CURTEST
-                        "NO_COMPILE;ONLY_COMPILE;ALWAYS_ENABLE" # flags
+                        "NO_COMPILE;ONLY_COMPILE" # flags
                         "EXE_NAME;PROCESSORS;WORKING_DIRECTORY" # one value args
-                        "CONDITION;TEST_DEPENDS;DRIVER;DRIVER_ARGS;DEPENDS;TEST_ARGS;SOURCES;LIBRARIES;INCLUDE_DIRS" # multi-value args
+                        "CONDITION;DEFAULT_ENABLE_IF;TEST_DEPENDS;DRIVER;DRIVER_ARGS;DEPENDS;TEST_ARGS;SOURCES;LIBRARIES;INCLUDE_DIRS" # multi-value args
                         ${ARGN})
 
   # set the default values for optional parameters
@@ -120,7 +134,11 @@ function(opm_add_test TestName)
   # case. They can still be build using 'make test-suite' and they can
   # be build and run using 'make check'
   set(CURTEST_EXCLUDE_FROM_ALL "")
-  if (NOT BUILD_TESTING AND NOT CURTEST_ALWAYS_ENABLE)
+  if ("AND OR ${CURTEST_DEFAULT_ENABLE_IF}" STREQUAL "AND OR ")
+    if (NOT BUILD_TESTING)
+      set(CURTEST_EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+    endif()
+  elseif (NOT (${CURTEST_DEFAULT_ENABLE_IF}))
     set(CURTEST_EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
   endif()
 
@@ -258,10 +276,27 @@ endfunction()
 #                     [CONDITION ConditionalExpression]
 #                     [SOURCES SourceFile1 SourceFile2 ...])
 function(opm_add_application AppName)
-  opm_add_test(${AppName} ${ARGN} ALWAYS_ENABLE ONLY_COMPILE)
+  opm_add_test(${AppName} ${ARGN}
+    DEFAULT_ENABLE_IF BUILD_APPLICATIONS
+    ONLY_COMPILE)
 
-  if(TARGET "${AppName}")
-    install(TARGETS "${AppName}" DESTINATION bin)
+  if (BUILD_APPLICATIONS)
+    # only install applications if they are built by default
+    if(TARGET "${AppName}")
+      install(TARGETS "${AppName}" DESTINATION bin)
+    endif()
+  endif()
+
+  if(NOT TARGET apps)
+    add_custom_target(apps)
+  endif()
+  if(NOT TARGET applications)
+    add_custom_target(applications)
+  endif()
+
+  if (TARGET "${AppName}")
+    add_dependencies(apps "${AppName}")
+    add_dependencies(applications "${AppName}")
   endif()
 endfunction()
 
