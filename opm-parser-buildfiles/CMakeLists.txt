@@ -53,6 +53,10 @@ opm_add_headers_library_and_executables("opmparser")
 target_link_libraries("opmparser" "${Boost_REGEX_LIBRARIES}" "${Boost_SYSTEM_LIBRARIES}" "${Boost_FILESYSTEM_LIBRARIES}")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
+if (BUILD_TESTING)
+  include(ExtraTests.cmake)
+endif()
+
 if(TARGET opmi)
   target_link_libraries(opmi ${Boost_LIBRARIES})
 endif()
