@@ -11,8 +11,3 @@ if(QUADMATH_FOUND)
   dune_register_package_flags(
     LIBRARIES "${QUADMATH_LIBRARIES}")
 endif()
-
-# this is a hack to make config.h work as advertised
-if(ecl_FOUND)
-  set(HAVE_ERT 1)
-endif()
