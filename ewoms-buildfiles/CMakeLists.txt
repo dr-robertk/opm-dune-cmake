@@ -74,7 +74,12 @@ opm_add_test(art2dgf
 # EQUIL init tests
 opm_add_test(test_equil
   DRIVER_ARGS --plain
-  CONDITION opm-grid_FOUND AND opm-parser_FOUND)
+  CONDITION opm-grid_FOUND AND opm-parser_FOUND AND opm-grid_FOUND)
+
+# Output ECL tests
+opm_add_test(test_ecl_output
+             DRIVER_ARGS --plain
+             CONDITION opm-parser_FOUND AND opm-grid_FOUND AND opm-output_FOUND)
 
 # add targets for all tests of the models. we add the water-air test
 # first because it take longest and so that we don't have to wait for

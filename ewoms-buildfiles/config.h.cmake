@@ -42,9 +42,6 @@
 /* Define to the codename of ewoms */
 #define EWOMS_VERSION_CODENAME "${EWOMS_VERSION_CODENAME}"
 
-/* Specify whether quadruple precision floating point arithmetics are available */
-#cmakedefine HAVE_QUAD 1
-
 /* begin bottom */
 
 /* end bottom */

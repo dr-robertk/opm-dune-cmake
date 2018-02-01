@@ -32,7 +32,7 @@ dune_enable_all_packages()
 
 # add all unit tests
 opm_add_test(test_blackoilfluidstate)
-#opm_add_test(test_ConditionalStorage)
+opm_add_test(test_ConditionalStorage)
 opm_add_test(test_eclblackoilfluidsystem CONDITION opm-parser_FOUND)
 opm_add_test(test_eclblackoilpvt CONDITION opm-parser_FOUND)
 opm_add_test(test_eclmateriallawmanager CONDITION opm-parser_FOUND)
