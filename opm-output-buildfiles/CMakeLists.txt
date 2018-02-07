@@ -30,5 +30,13 @@ install(TARGETS compareSummary DESTINATION bin)
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA")
 
+# the file comparison utilities are used for the testing of
+# opm-simulators, so we build them regardless of whether
+# BUILD_APPLICATIONS is set or not.
+if(NOT BUILD_APPLICATIONS)
+  add_custom_target(opm-output-utilities ALL)
+  add_dependencies("opm-output-utilities" compareECL compareSummary)
+endif()
+
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)
