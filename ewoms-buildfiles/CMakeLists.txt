@@ -117,6 +117,10 @@ opm_add_test(finger_immiscible_ecfv_adaptive
              NO_COMPILE
              TEST_ARGS --enable-grid-adaptation=true --end-time=25e3)
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/tests/fivespot_immiscible_sofv_ad.cc")
+  opm_add_test(fivespot_immiscible_sofv_ad)
+endif()
+
 foreach(tapp co2injection_flash_ni_vcfv
              co2injection_flash_ni_ecfv
              co2injection_flash_vcfv
