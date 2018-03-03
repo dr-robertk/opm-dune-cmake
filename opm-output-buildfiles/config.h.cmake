@@ -27,6 +27,7 @@
 
 /* Hack around some ugly code in the unit tests. */
 #define HAVE_DYNAMIC_BOOST_TEST 1
+#define BOOST_TEST_DYN_LINK 1
 
 /* end private */
 
