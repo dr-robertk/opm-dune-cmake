@@ -51,6 +51,7 @@ add_definitions(-DBOOST_TEST_DYN_LINK=1)
 opm_add_headers_library_and_executables("opmparser")
 
 target_link_libraries("opmparser" "${Boost_REGEX_LIBRARIES}" "${Boost_SYSTEM_LIBRARIES}" "${Boost_FILESYSTEM_LIBRARIES}")
+file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
 if (BUILD_TESTING)
