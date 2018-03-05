@@ -19,7 +19,13 @@ set(ecl_FOUND 1)
 dune_register_package_flags(
   LIBRARIES "${ecl_LIBRARIES}"
   INCLUDE_DIRS "${ecl_INCLUDE_DIRS}")
-  
+
+# handle boost
+find_package(Boost COMPONENTS regex system filesystem REQUIRED)
+dune_register_package_flags(
+  LIBRARIES "${Boost_LIBRARIES}"
+  INCLUDE_DIRS "${Boost_INCLUDE_DIRS}")
+
 # this is a hack that is required for the non-standard locations of
 # header files in opm-parser
 if (DEFINED opm-parser_SOURCE_DIR)
