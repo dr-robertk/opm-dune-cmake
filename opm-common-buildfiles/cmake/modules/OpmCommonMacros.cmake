@@ -4,6 +4,11 @@
 # suggests opm-common!
 #
 
+# since this is basically the whole point of the module we always want
+# to enable the ECL stuff, thank you.
+set(ENABLE_ECL_INPUT ON)
+set(ENABLE_ECL_OUTPUT ON)
+
 find_package(ecl REQUIRED)
 if(NOT TARGET ecl)
   message(FATAL_ERROR "libecl not found!")

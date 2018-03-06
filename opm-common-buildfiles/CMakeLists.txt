@@ -32,11 +32,7 @@ include(GenerateKeywords.cmake)
 # Append generated sources
 list(APPEND MAIN_SOURCE_FILES ${PROJECT_BINARY_DIR}/ParserKeywords.cpp)
 
-# read in the file lists of CMakeLists_files.txt (since this is
-# basically the whole point of the module we always want to enable the
-# ECL stuff, thank you.)
-set(ENABLE_ECL_INPUT ON)
-set(ENABLE_ECL_OUTPUT ON)
+# read in the file lists of CMakeLists_files.txt
 opm_read_listsfile()
 
 add_definitions(-DBOOST_TEST_DYN_LINK=1)
