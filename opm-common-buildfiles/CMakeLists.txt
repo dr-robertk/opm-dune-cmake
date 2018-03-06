@@ -35,6 +35,14 @@ list(APPEND MAIN_SOURCE_FILES ${PROJECT_BINARY_DIR}/ParserKeywords.cpp)
 # read in the file lists of CMakeLists_files.txt
 opm_read_listsfile()
 
+# the file comparison utilities are used for the testing of
+# opm-simulators, so we build them regardless of whether
+# BUILD_APPLICATIONS is set or not.
+if(NOT BUILD_APPLICATIONS)
+  add_custom_target(opm-output-utilities ALL)
+  add_dependencies("opm-output-utilities" compareECL compareSummary)
+endif()
+
 add_definitions(-DBOOST_TEST_DYN_LINK=1)
 
 opm_add_headers_library_and_executables("opmcommon")
