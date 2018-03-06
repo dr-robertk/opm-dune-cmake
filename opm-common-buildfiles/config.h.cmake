@@ -56,6 +56,11 @@
 #cmakedefine HAVE_PTHREAD 1
 #endif
 
+/* ECL I/O support is hardcoded into this build system for this module */
+/* (ECL I/O is the whole point of the opm-common module! */
+#define HAVE_ECL_INPUT 1
+#define HAVE_ECL_OUTPUT 1
+
 /* begin bottom */
 
 /* end bottom */
