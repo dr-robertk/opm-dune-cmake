@@ -8,6 +8,8 @@
 # to enable the ECL stuff, thank you.
 set(ENABLE_ECL_INPUT ON)
 set(ENABLE_ECL_OUTPUT ON)
+set(HAVE_ECL_INPUT ON)
+set(HAVE_ECL_OUTPUT ON)
 
 find_package(ecl REQUIRED)
 if(NOT TARGET ecl)
