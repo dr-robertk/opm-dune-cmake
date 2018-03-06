@@ -115,12 +115,9 @@ EOF
 get_source_dir
 extract_module_name
 case "$MODULE_NAME" in
-    "opm-parser" | \
     "opm-common" | \
-    "opm-output" | \
     "opm-grid" | \
     "opm-material" | \
-    "opm-core" | \
     "ewoms" | \
     "opm-simulators" | \
     "opm-upscaling")
