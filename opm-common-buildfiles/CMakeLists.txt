@@ -59,7 +59,9 @@ if(TARGET opmi)
   target_link_libraries(opmi ${Boost_LIBRARIES})
 endif()
 
-opm_recusive_copy_testdata("tests/*.data" "tests/*.DATA")
+opm_recusive_copy_testdata("tests/*.data")
+
+opm_recusive_copy_testdata_to_builddir("tests/*.param" "tests/*.DATA")
 
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)
