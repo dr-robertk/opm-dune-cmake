@@ -129,6 +129,10 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/tests/transport_immiscible_sofv_ad.cc")
   opm_add_test(transport_immiscible_sofv_ad)
 endif()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/tests/transport_immiscible_weno_ad.cc")
+  opm_add_test(transport_immiscible_weno_ad)
+endif()
+
 foreach(tapp co2injection_flash_ni_vcfv
              co2injection_flash_ni_ecfv
              co2injection_flash_vcfv
