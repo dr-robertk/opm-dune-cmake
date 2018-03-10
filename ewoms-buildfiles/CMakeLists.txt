@@ -57,7 +57,7 @@ opm_set_test_driver("${PROJECT_SOURCE_DIR}/bin/runtest.sh" "--simulation")
 opm_add_application(ebos
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos
-                    CONDITION opm-common AND opm-grid_FOUND)
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
 
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
