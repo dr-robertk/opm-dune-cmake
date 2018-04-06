@@ -22,6 +22,9 @@ include(OpmMacros)
 # find the packages needed to compile the module
 find_package(Boost COMPONENTS regex system filesystem unit_test_framework REQUIRED)
 
+# find the opm-tests module
+find_package(opm-tests)
+
 # we want all features detected by the build system to be enabled,
 # thank you!
 dune_enable_all_packages()
@@ -51,9 +54,7 @@ target_link_libraries("opmcommon" "${Boost_REGEX_LIBRARIES}" "${Boost_SYSTEM_LIB
 file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/include")
 include_directories("${PROJECT_BINARY_DIR}/include")
 
-if (BUILD_TESTING)
-  include(ExtraTests.cmake)
-endif()
+include(ExtraTests.cmake)
 
 if(TARGET opmi)
   target_link_libraries(opmi ${Boost_LIBRARIES})
