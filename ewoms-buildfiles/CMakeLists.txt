@@ -242,5 +242,7 @@ opm_add_test(obstacle_pvs_restart
 opm_add_test(tutorial1
              SOURCES tutorial/tutorial1.cc)
 
+opm_add_test(test_tasklets DRIVER_ARGS --plain)
+
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)
