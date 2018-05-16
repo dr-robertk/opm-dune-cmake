@@ -9,6 +9,11 @@
 #  ZOLTAN_INCLUDE_DIR  - incude paths to use libzoltan
 #  ZOLTAN_LIBRARIES    - Link these to use libzoltan
 
+cmake_policy(PUSH)
+if (POLICY CMP0054)
+  cmake_policy(SET CMP0054 OLD)
+endif()
+
 set(ZOLTAN_SEARCH_PATH "/usr" "/usr/local" "/opt" "/opt/local")
 set(ZOLTAN_NO_DEFAULT_PATH "")
 if(ZOLTAN_ROOT)
@@ -54,3 +59,5 @@ find_package_handle_standard_args(ZOLTAN
   ZOLTAN_LIBRARIES
   ZOLTAN_INCLUDE_DIRS
   )
+
+cmake_policy(POP)
