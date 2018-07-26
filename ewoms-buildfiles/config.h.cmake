@@ -27,6 +27,9 @@
 
 /* end private */
 
+/* Specify if the PAPI performance measurement library is available */
+#cmakedefine HAVE_PAPI 1
+
 /* Define to the version of ewoms */
 #define EWOMS_VERSION "${EWOMS_VERSION_STRING}"
 
