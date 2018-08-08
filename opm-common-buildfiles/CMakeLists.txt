@@ -43,7 +43,7 @@ opm_read_listsfile()
 # BUILD_APPLICATIONS is set or not.
 if(NOT BUILD_APPLICATIONS)
   add_custom_target(opm-output-utilities ALL)
-  add_dependencies("opm-output-utilities" compareECL compareSummary)
+  add_dependencies("opm-output-utilities" compareECL compareSummary opmpack)
 endif()
 
 add_definitions(-DBOOST_TEST_DYN_LINK=1)

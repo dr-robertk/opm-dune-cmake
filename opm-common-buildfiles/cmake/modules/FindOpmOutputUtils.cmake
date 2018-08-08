@@ -27,10 +27,20 @@ else()
   message("The compareECL utility was not found!")
 endif()
 
+if (EXISTS "${opm-common_DIR}/opmpack")
+  set(OPM_PACK_COMMAND "${opm-common_DIR}/opmpack")
+elseif (EXISTS "${opm-common_DIR}/bin/opmpack")
+  set(OPM_PACK_COMMAND "${opm-common_DIR}/bin/opmpack")
+elseif (EXISTS "${opm-common_PREFIX}/bin/opmpack")
+  set(OPM_PACK_COMMAND "${opm-common_PREFIX}/bin/opmpack")
+else()
+  message("The opmpack utility was not found!")
+endif()
+
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   OPM_OUTPUT_UTILS
-  "The opm-common utilities could not be found. Probably you need to install opm-common." COMPARE_ECL_COMMAND COMPARE_SUMMARY_COMMAND)
+  "The opm-common utilities could not be found. Probably you need to install opm-common." COMPARE_ECL_COMMAND COMPARE_SUMMARY_COMMAND OPM_PACK_COMMAND)
 
 # stop the dune build system from complaining if the opm-common
 # utilities were found
