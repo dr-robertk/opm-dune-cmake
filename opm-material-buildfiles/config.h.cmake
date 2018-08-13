@@ -42,6 +42,9 @@
 /* Define whether the ERT/libecl libraries are available */
 #cmakedefine HAVE_ERT 1
 
+/* Specify whether quadruple precision floating point arithmetics are available */
+#cmakedefine HAVE_QUAD 1
+
 /* begin bottom */
 
 /* end bottom */

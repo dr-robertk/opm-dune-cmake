@@ -27,6 +27,9 @@
 
 /* end private */
 
+/* Specify if the PAPI performance measurement library is available */
+#cmakedefine HAVE_PAPI 1
+
 /* Define to the version of ewoms */
 #define EWOMS_VERSION "${EWOMS_VERSION_STRING}"
 
@@ -41,9 +44,6 @@
 
 /* Define to the codename of ewoms */
 #define EWOMS_VERSION_CODENAME "${EWOMS_VERSION_CODENAME}"
-
-/* Specify whether quadruple precision floating point arithmetics are available */
-#cmakedefine HAVE_QUAD 1
 
 /* begin bottom */
 

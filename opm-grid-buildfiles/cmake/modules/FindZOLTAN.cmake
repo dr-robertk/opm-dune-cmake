@@ -9,6 +9,11 @@
 #  ZOLTAN_INCLUDE_DIR  - incude paths to use libzoltan
 #  ZOLTAN_LIBRARIES    - Link these to use libzoltan
 
+cmake_policy(PUSH)
+if (POLICY CMP0054)
+  cmake_policy(SET CMP0054 OLD)
+endif()
+
 set(ZOLTAN_SEARCH_PATH "/usr" "/usr/local" "/opt" "/opt/local")
 set(ZOLTAN_NO_DEFAULT_PATH "")
 if(ZOLTAN_ROOT)
@@ -18,7 +23,7 @@ endif()
 
 # Make sure we have checked for the underlying partitioners.
 find_package(PTScotch)
-#find_package(ParMETIS)
+find_package(ParMETIS)
 
 # search for files which implements this module
 find_path (ZOLTAN_INCLUDE_DIRS
@@ -47,8 +52,6 @@ if (ZOLTAN_INCLUDE_DIRS OR ZOLTAN_LIBRARIES)
       ${PTSCOTCH_INCLUDE_DIRS})
 endif()
 
-set (ZOLTAN_CONFIG_VAR HAVE_ZOLTAN)
-
 # print a message to indicate status of this package
 include (FindPackageHandleStandardArgs)
 find_package_handle_standard_args(ZOLTAN
@@ -56,3 +59,5 @@ find_package_handle_standard_args(ZOLTAN
   ZOLTAN_LIBRARIES
   ZOLTAN_INCLUDE_DIRS
   )
+
+cmake_policy(POP)

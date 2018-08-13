@@ -379,7 +379,14 @@ function(opm_recusive_copy_testdata)
 
     foreach(SOURCE_FILE ${TMP})
       get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
-      file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIRNAME}")
+      get_filename_component(FILENAME "${SOURCE_FILE}" NAME)
+
+      if (NOT EXISTS "${CMAKE_BINARY_DIR}/${DIRNAME}/${FILENAME}")
+        file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${DIRNAME}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink
+          "${CMAKE_SOURCE_DIR}/${SOURCE_FILE}"
+          "${CMAKE_BINARY_DIR}/${DIRNAME}/${FILENAME}")
+      endif()
     endforeach()
   endforeach()
 endfunction()
@@ -390,7 +397,14 @@ function(opm_recusive_copy_testdata_to_builddir)
 
     foreach(SOURCE_FILE ${TMP})
       get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
-      file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/")
+      get_filename_component(FILENAME "${SOURCE_FILE}" NAME)
+
+      if (NOT EXISTS "${CMAKE_BINARY_DIR}/${FILENAME}")
+        file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${DIRNAME}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink
+          "${CMAKE_SOURCE_DIR}/${SOURCE_FILE}"
+          "${CMAKE_BINARY_DIR}/${FILENAME}")
+      endif()
     endforeach()
   endforeach()
 endfunction()

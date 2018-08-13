@@ -27,6 +27,7 @@
 
 /* Hack around some ugly code in the unit tests. */
 #define HAVE_DYNAMIC_BOOST_TEST 1
+#define BOOST_TEST_DYN_LINK 1
 
 /* end private */
 
@@ -54,6 +55,11 @@
 #ifndef HAVE_PTHREAD
 #cmakedefine HAVE_PTHREAD 1
 #endif
+
+/* ECL I/O support is hardcoded into this build system for this module */
+/* (ECL I/O is the whole point of the opm-common module! */
+#define HAVE_ECL_INPUT 1
+#define HAVE_ECL_OUTPUT 1
 
 /* begin bottom */
 

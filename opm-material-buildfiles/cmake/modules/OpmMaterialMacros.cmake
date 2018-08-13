@@ -40,8 +40,3 @@ endif()
 if (THREADS_HAVE_PTHREAD_ARG)
   set(HAVE_PTHREAD 1)
 endif()
-
-# this is a hack to make config.h work as advertised
-if(ecl_FOUND)
-  set(HAVE_ERT 1)
-endif()

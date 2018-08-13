@@ -1,7 +1,7 @@
 # -*- mode: cmake; tab-width: 2; indent-tabs-mode: t; truncate-lines: t
 # vim: set filetype=cmake autoindent tabstop=2 shiftwidth=2 noexpandtab softtabstop=2 nowrap:
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.0.1)
 
 # set up project and specify the minimum cmake version
 project("ewoms" C CXX)
@@ -57,7 +57,7 @@ opm_set_test_driver("${PROJECT_SOURCE_DIR}/bin/runtest.sh" "--simulation")
 opm_add_application(ebos
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos
-                    CONDITION opm-grid_FOUND AND opm-parser_FOUND)
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
 
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
@@ -74,7 +74,12 @@ opm_add_test(art2dgf
 # EQUIL init tests
 opm_add_test(test_equil
   DRIVER_ARGS --plain
-  CONDITION opm-grid_FOUND AND opm-parser_FOUND)
+  CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+# Output ECL tests
+opm_add_test(test_ecl_output
+             DRIVER_ARGS --plain
+             CONDITION opm-common_FOUND AND opm-grid_FOUND)
 
 # add targets for all tests of the models. we add the water-air test
 # first because it take longest and so that we don't have to wait for
@@ -244,6 +249,8 @@ opm_add_test(obstacle_pvs_restart
 
 opm_add_test(tutorial1
              SOURCES tutorial/tutorial1.cc)
+
+opm_add_test(test_tasklets DRIVER_ARGS --plain)
 
 # finalize the dune project, e.g. generating config.h etc.
 finalize_dune_project(GENERATE_CONFIG_H_CMAKE)

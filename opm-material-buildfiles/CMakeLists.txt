@@ -1,7 +1,7 @@
 # -*- mode: cmake; tab-width: 2; indent-tabs-mode: t; truncate-lines: t
 # vim: set filetype=cmake autoindent tabstop=2 shiftwidth=2 noexpandtab softtabstop=2 nowrap:
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.0.1)
 
 # set up project and specify the minimum cmake version
 project("opm-material" C CXX)
@@ -32,10 +32,10 @@ dune_enable_all_packages()
 
 # add all unit tests
 opm_add_test(test_blackoilfluidstate)
-#opm_add_test(test_ConditionalStorage)
-opm_add_test(test_eclblackoilfluidsystem CONDITION opm-parser_FOUND)
-opm_add_test(test_eclblackoilpvt CONDITION opm-parser_FOUND)
-opm_add_test(test_eclmateriallawmanager CONDITION opm-parser_FOUND)
+opm_add_test(test_ConditionalStorage)
+opm_add_test(test_eclblackoilfluidsystem CONDITION opm-common_FOUND)
+opm_add_test(test_eclblackoilpvt CONDITION opm-common_FOUND)
+opm_add_test(test_eclmateriallawmanager CONDITION opm-common_FOUND)
 opm_add_test(test_fluidmatrixinteractions)
 opm_add_test(test_pengrobinson)
 opm_add_test(test_densead)

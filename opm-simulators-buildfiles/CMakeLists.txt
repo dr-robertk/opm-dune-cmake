@@ -1,7 +1,7 @@
 # -*- mode: cmake; tab-width: 2; indent-tabs-mode: t; truncate-lines: t
 # vim: set filetype=cmake autoindent tabstop=2 shiftwidth=2 noexpandtab softtabstop=2 nowrap:
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.0.1)
 
 # set up project and specify the minimum cmake version
 project("opm-simulators" C CXX)
@@ -19,7 +19,7 @@ dune_project()
 # include the OPM cmake macros
 include(OpmMacros)
 
-find_package(PlainOpmData)
+find_package(opm-tests)
 find_package(OpmOutputUtils)
 
 # find the packages needed to compile the unit tests
@@ -68,7 +68,7 @@ if (NOT EIGEN3_FOUND)
         add_dependencies (opmsimulators Eigen3)
 endif (NOT EIGEN3_FOUND)
 
-if(opm-data_FOUND)
+if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
 endif()
 
