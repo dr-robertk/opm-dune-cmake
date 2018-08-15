@@ -59,6 +59,20 @@ opm_add_application(ebos
                     EXE_NAME ebos
                     CONDITION opm-common_FOUND AND opm-grid_FOUND)
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
+opm_add_application(ebos_femistl
+                    SOURCES ebos/ebos_femistl.cc
+                    EXE_NAME ebos_femistl
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+opm_add_application(ebos_fempetsc
+                    SOURCES ebos/ebos_fempetsc.cc
+                    EXE_NAME ebos_fempetsc
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+endif()
+
+
+
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
                     SOURCES art2dgf/art2dgf.cc
