@@ -6,17 +6,6 @@
 #
 #  Usage:
 #  find_package(OpmOutputUtils)
-
-if (EXISTS "${opm-common_DIR}/compareSummary")
-  set(COMPARE_SUMMARY_COMMAND "${opm-common_DIR}/compareSummary")
-elseif (EXISTS "${opm-common_DIR}/bin/compareSummary")
-  set(COMPARE_SUMMARY_COMMAND "${opm-common_DIR}/bin/compareSummary")
-elseif (EXISTS "${opm-common_PREFIX}/bin/compareSummary")
-  set(COMPARE_SUMMARY_COMMAND "${opm-common_PREFIX}/bin/compareSummary")
-else()
-  message("The compareSummary utility was not found!")
-endif()
-
 if (EXISTS "${opm-common_DIR}/compareECL")
   set(COMPARE_ECL_COMMAND "${opm-common_DIR}/compareECL")
 elseif (EXISTS "${opm-common_DIR}/bin/compareECL")
