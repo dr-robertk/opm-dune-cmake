@@ -42,6 +42,10 @@ opm_read_listsfile()
 # opm-simulators, so we build them regardless of whether
 # BUILD_APPLICATIONS is set or not.
 
+if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+endif()
+
 add_library(testutil STATIC
   examples/test_util/EclFilesComparator.cpp
   examples/test_util/EclIntegrationTest.cpp
