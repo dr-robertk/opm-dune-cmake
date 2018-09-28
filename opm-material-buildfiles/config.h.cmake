@@ -39,6 +39,12 @@
 /* Define to the revision of opm-material */
 #define OPM_MATERIAL_VERSION_REVISION ${OPM_MATERIAL_VERSION_REVISION}
 
+/* Specify whether OpenMP is available or not */
+#cmakedefine HAVE_OPENMP 1
+
+/* Define whether valgrind is available */
+#cmakedefine HAVE_VALGRIND 1
+
 /* Define whether the ERT/libecl libraries are available */
 #cmakedefine HAVE_ERT 1
 
