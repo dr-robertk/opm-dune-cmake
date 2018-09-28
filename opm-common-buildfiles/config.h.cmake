@@ -43,15 +43,8 @@
 /* Define to the revision of opm-common */
 #define OPM_COMMON_VERSION_REVISION ${OPM_COMMON_VERSION_REVISION}
 
-/* Specify wheter the pthreads library is available or not. This is supposed */
-/* to be handled by dune-common, but since this seems not to be the case, */
-/* let's work around it here */
-#ifndef HAVE_PTHREAD
-#cmakedefine HAVE_PTHREAD 1
-#endif
-
 /* ECL I/O support is hardcoded into this build system for this module */
-/* (ECL I/O is the whole point of the opm-common module! */
+/* (ECL I/O is the whole point of the opm-common module!) */
 #define HAVE_ECL_INPUT 1
 #define HAVE_ECL_OUTPUT 1
 
