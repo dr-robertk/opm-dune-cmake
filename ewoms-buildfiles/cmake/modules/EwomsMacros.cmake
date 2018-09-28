@@ -15,3 +15,14 @@ if(PAPI_FOUND)
     INCLUDE_DIRS "${PAPI_INCLUDE_DIR}"
     LIBRARIES "${PAPI_LIBRARIES}")
 endif()
+
+# the HWLOC library is also unused by vanilla eWoms. Like PAPI, it is
+# useful for debugging purposes.
+find_package(Hwloc)
+
+if(Hwloc_FOUND)
+  set(HAVE_HWLOC 1)
+  dune_register_package_flags(
+    INCLUDE_DIRS "${Hwloc_INCLUDE_DIRS}"
+    LIBRARIES "${Hwloc_LIBRARIES}")
+endif()
