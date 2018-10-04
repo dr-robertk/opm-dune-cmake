@@ -41,9 +41,26 @@ opm_read_listsfile()
 # the file comparison utilities are used for the testing of
 # opm-simulators, so we build them regardless of whether
 # BUILD_APPLICATIONS is set or not.
+
+if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+endif()
+
+add_library(testutil STATIC
+  examples/test_util/EclFilesComparator.cpp
+  examples/test_util/EclIntegrationTest.cpp
+  examples/test_util/EclRegressionTest.cpp
+  examples/test_util/summaryComparator.cpp
+  examples/test_util/summaryIntegrationTest.cpp
+  examples/test_util/summaryRegressionTest.cpp)
+target_link_libraries(testutil ecl)
+add_executable(compareECL examples/test_util/compareECL.cpp)
+target_link_libraries(compareECL testutil opmcommon)
+install(TARGETS compareECL DESTINATION bin)
+
 if(NOT BUILD_APPLICATIONS)
   add_custom_target(opm-output-utilities ALL)
-  add_dependencies("opm-output-utilities" compareECL compareSummary opmpack)
+  add_dependencies("opm-output-utilities" opmpack)
 endif()
 
 add_definitions(-DBOOST_TEST_DYN_LINK=1)

@@ -72,6 +72,17 @@ if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
 endif()
 
+opm_add_application(flow
+  SOURCES
+   flow/flow.cpp
+   flow/flow_ebos_blackoil.cpp
+   flow/flow_ebos_gasoil.cpp
+   flow/flow_ebos_oilwater.cpp
+   flow/flow_ebos_polymer.cpp
+   flow/flow_ebos_solvent.cpp
+   flow/flow_ebos_energy.cpp
+   flow/flow_ebos_oilwater_polymer.cpp)
+
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
 
 # finalize the dune project, e.g. generating config.h etc.

@@ -2,11 +2,15 @@
 #
 # Try to find the libzoltan graph partioning library
 #
+# This module reads hints about search locations from variables::
+#
+#  ZOLTAN_DIR          - path where Trilinos/ZOLTAN was installed to
+#
 # Once done, this will define:
 #
 #  ZOLTAN_FOUND        - system has the libzoltan graph partioning library
 #  HAVE_ZOLTAN         - like ZOLTAN_FOUND, but for the inclusion in config.h
-#  ZOLTAN_INCLUDE_DIR  - incude paths to use libzoltan
+#  ZOLTAN_INCLUDE_DIR  - include paths to use libzoltan
 #  ZOLTAN_LIBRARIES    - Link these to use libzoltan
 
 cmake_policy(PUSH)
@@ -16,7 +20,10 @@ endif()
 
 set(ZOLTAN_SEARCH_PATH "/usr" "/usr/local" "/opt" "/opt/local")
 set(ZOLTAN_NO_DEFAULT_PATH "")
-if(ZOLTAN_ROOT)
+if(ZOLTAN_DIR)
+  set(ZOLTAN_SEARCH_PATH "${ZOLTAN_DIR}")
+  set(ZOLTAN_NO_DEFAULT_PATH "NO_DEFAULT_PATH")
+elseif(ZOLTAN_ROOT)
   set(ZOLTAN_SEARCH_PATH "${ZOLTAN_ROOT}")
   set(ZOLTAN_NO_DEFAULT_PATH "NO_DEFAULT_PATH")
 endif()

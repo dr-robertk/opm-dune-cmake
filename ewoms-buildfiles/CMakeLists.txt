@@ -140,6 +140,14 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/tests/fivespot_immiscible_sofv_ad.cc")
   opm_add_test(fivespot_immiscible_sofv_ad)
 endif()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/tests/transport_immiscible_sofv_fd.cc")
+  opm_add_test(transport_immiscible_sofv_fd)
+endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/tests/transport_immiscible_sofv_ad.cc")
+  opm_add_test(transport_immiscible_sofv_ad)
+endif()
+
 foreach(tapp co2injection_flash_ni_vcfv
              co2injection_flash_ni_ecfv
              co2injection_flash_vcfv
