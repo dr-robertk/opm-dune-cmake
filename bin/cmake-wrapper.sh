@@ -119,6 +119,7 @@ case "$MODULE_NAME" in
     "opm-grid" | \
     "opm-material" | \
     "ewoms" | \
+    "chiwoms" | \
     "opm-simulators" | \
     "opm-upscaling")
         echo "Detected OPM module '$MODULE_NAME' in directory '$SOURCE_DIR'. Using wrapped cmake."
