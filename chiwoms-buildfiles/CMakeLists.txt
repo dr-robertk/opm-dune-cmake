@@ -57,7 +57,7 @@ opm_add_application(chiwoms
                       src/co2_c8_dens.c
                       src/co2_c8_enth.c
                       src/co2_c8_visc.c
-                      src/padua.c
+                      src/padua.cpp
                     EXE_NAME chiwoms)
 
 # finalize the dune project, e.g. generating config.h etc.
