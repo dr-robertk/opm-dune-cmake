@@ -84,9 +84,18 @@ opm_add_application(flow_femistl
   SOURCES
    flow/flow_femistl.cpp)
 
-opm_add_application(flow_fempetsc
-  SOURCES
+if(PETSC_FOUND OR PETSc_FOUND)
+	opm_add_application(flow_fempetsc
+	 SOURCES
    flow/flow_fempetsc.cpp)
+endif()
+
+if(AMGXSOLVER_FOUND)
+	opm_add_application(flow_amgxpetsc
+	 SOURCES
+   flow/flow_amgxpetsc.cpp)
+endif()
+
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
 
