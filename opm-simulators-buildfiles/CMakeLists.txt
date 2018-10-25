@@ -76,6 +76,18 @@ opm_add_application(flow
   SOURCES
    flow/flow.cpp)
 
+opm_add_application(flow_blackoil
+  SOURCES
+   flow/flow_blackoil.cpp)
+
+opm_add_application(flow_femistl
+  SOURCES
+   flow/flow_femistl.cpp)
+
+opm_add_application(flow_fempetsc
+  SOURCES
+   flow/flow_fempetsc.cpp)
+
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
 
 # finalize the dune project, e.g. generating config.h etc.
