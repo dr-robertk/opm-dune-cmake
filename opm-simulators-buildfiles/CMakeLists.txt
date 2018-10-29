@@ -96,6 +96,12 @@ if(AMGXSOLVER_FOUND)
    flow/flow_amgxpetsc.cpp)
 endif()
 
+if(VIENNACL_FOUND)
+	opm_add_application(flow_femviennacl
+	 SOURCES
+   flow/flow_femviennacl.cpp)
+endif()
+
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
 
