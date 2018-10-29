@@ -69,6 +69,16 @@ opm_add_application(ebos_fempetsc
                     SOURCES ebos/ebos_fempetsc.cc
                     EXE_NAME ebos_fempetsc
                     CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+opm_add_application(ebos_amgxpetsc
+                    SOURCES ebos/ebos_amgxpetsc.cc
+                    EXE_NAME ebos_amgxpetsc
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+opm_add_application(ebos_femviennacl
+                    SOURCES ebos/ebos_femviennacl.cc
+                    EXE_NAME ebos_femviennacl
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
 endif()
 
 
