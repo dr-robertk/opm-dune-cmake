@@ -29,6 +29,8 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 # them, and add the library and create executables
 opm_read_listsfile()
 
+# this is quite a hack: these files should not have be added to the
+# lists in the first place!
 if (NOT MPI_FOUND)
   list(REMOVE_ITEM TEST_SOURCE_FILES
     tests/test_parallel_linearsolver.cpp
@@ -53,20 +55,6 @@ if (NOT SuiteSparse_FOUND)
 endif()
 
 opm_add_headers_library_and_executables("opmsimulators")
-
-# download Eigen if user doesn't have the correct version
-if (NOT EIGEN3_FOUND)
-        message (STATUS "Downloading Eigen3")
-        include (ExternalProject)
-        externalProject_Add (Eigen3
-                GIT_REPOSITORY git://github.com/OPM/eigen3
-                UPDATE_COMMAND git checkout 9e788db99d73f3199ade74bfda8d9f73fdfbbe4c
-                CMAKE_ARGS -Wno-dev -DEIGEN_TEST_NO_OPENGL=1 -DEIGEN_BUILD_PKGCONFIG=0 -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/eigen3-installed
-                )
-
-        include_directories (${CMAKE_BINARY_DIR}/eigen3-installed/include/eigen3)
-        add_dependencies (opmsimulators Eigen3)
-endif (NOT EIGEN3_FOUND)
 
 if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
