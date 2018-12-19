@@ -69,7 +69,9 @@ opm_add_application(flow
    flow/flow_ebos_polymer.cpp
    flow/flow_ebos_solvent.cpp
    flow/flow_ebos_energy.cpp
-   flow/flow_ebos_oilwater_polymer.cpp)
+   flow/flow_ebos_oilwater_polymer.cpp
+   flow/flow_ebos_oilwater_polymer_injectivity.cpp)
+
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
 
