@@ -11,11 +11,17 @@ set(ENABLE_ECL_OUTPUT ON)
 set(HAVE_ECL_INPUT ON)
 set(HAVE_ECL_OUTPUT ON)
 
+# if ecl_DIR was specified then add this to the search path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ecl_DIR})
+
+# if ecl_ROOT was specified then add this to the search path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ecl_ROOT})
+
 find_package(ecl REQUIRED)
 if(NOT TARGET ecl)
   message(FATAL_ERROR "libecl not found!")
 endif()
-  
+
 # Need to grab from target to enable transitional depends
 get_target_property(ecl_INCLUDE_DIRS ecl INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(ecl_LIBRARIES ecl INTERFACE_LINK_LIBRARIES)
