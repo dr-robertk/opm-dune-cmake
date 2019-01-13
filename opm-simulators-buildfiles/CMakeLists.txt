@@ -74,7 +74,16 @@ endif()
 
 opm_add_application(flow
   SOURCES
-   flow/flow.cpp)
+   flow/flow.cpp
+   flow/flow_ebos_blackoil.cpp
+	 flow/flow_ebos_gasoil.cpp
+	 flow/flow_ebos_oilwater.cpp
+   flow/flow_ebos_polymer.cpp
+	 flow/flow_ebos_oilwater_polymer.cpp
+	 flow/flow_ebos_oilwater_polymer_injectivity.cpp
+	 flow/flow_ebos_energy.cpp
+	 flow/flow_ebos_solvent.cpp)
+
 
 opm_add_application(flow_blackoil
   SOURCES
