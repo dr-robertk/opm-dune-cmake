@@ -30,9 +30,11 @@ opm_export_cmake_modules()
 # thank you!
 dune_enable_all_packages()
 
+find_package(OpmOutputUtils)
+
 # copy the data files (i.e., grid files, etc) needed to run the unit
 # tests from the source to the build directory
-opm_recusive_copy_testdata_to_builddir("tests/data/*" "tests/referencesolutions/*")
+opm_recusive_copy_testdata_to_builddir("tests/data/*")
 file(COPY "${CMAKE_SOURCE_DIR}/tests/data/" DESTINATION "${CMAKE_BINARY_DIR}/data")
 
 # extract the code name of the current ewoms revision from the
@@ -58,6 +60,13 @@ opm_add_application(ebos
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos
                     CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+opm_add_test(SPE1
+  EXE_NAME ebos
+  NO_COMPILE
+  DEPENDS ebos
+  CONDITION opm-common_FOUND AND opm-grid_FOUND
+  DRIVER_ARGS --spe1 "${COMPARE_ECL_COMMAND}")
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
 opm_add_application(ebos_femistl
