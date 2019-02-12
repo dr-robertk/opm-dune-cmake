@@ -54,7 +54,7 @@ if (NOT SuiteSparse_FOUND)
     )
 endif()
 
-opm_add_headers_library_and_executables("opmsimulators")
+opm_add_headers_library_and_executables("opmeclwells")
 
 if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
