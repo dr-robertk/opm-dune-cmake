@@ -257,7 +257,7 @@ function(opm_add_test TestName)
     # CDash dashboard. it this is removed, the test is just silently
     # ignored.
     if (NOT CURTEST_ONLY_COMPILE AND ADD_DISABLED_CTESTS)
-      add_test(${TestName} skip_test_dummy)
+      add_test(${TestName}  ${CURTEST_DRIVER} --skip)
 
       # return code 77 should be interpreted as skipped test
       set_tests_properties(${TestName} PROPERTIES SKIP_RETURN_CODE 77)
