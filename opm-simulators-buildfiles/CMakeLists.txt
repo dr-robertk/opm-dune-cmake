@@ -60,6 +60,24 @@ if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
 endif()
 
+# the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
+opm_add_application(ebos
+                    SOURCES ebos/ebos.cc
+                    EXE_NAME ebos
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
+opm_add_application(ebos_femistl
+                    SOURCES ebos/ebos_femistl.cc
+                    EXE_NAME ebos_femistl
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+
+opm_add_application(ebos_fempetsc
+                    SOURCES ebos/ebos_fempetsc.cc
+                    EXE_NAME ebos_fempetsc
+                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+endif()
+
 opm_add_application(flow
   SOURCES
    flow/flow.cpp

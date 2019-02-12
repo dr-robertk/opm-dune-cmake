@@ -19,9 +19,9 @@ dune_project()
 # include the additional generic OPM cmake macros
 include(OpmMacros)
 
-# recursively mark all header files beneath the "ewoms" and "ebos"
-# directories for installation.
-opm_recusive_export_all_headers("ewoms" "ebos")
+# recursively mark all header files beneath the "ewoms" directory for
+# installation.
+opm_recusive_export_all_headers("ewoms")
 
 # the cmake modules get a special treatment
 opm_export_cmake_modules()
@@ -54,33 +54,6 @@ endif()
 
 # eWoms comes with its custom test driver script
 opm_set_test_driver("${PROJECT_SOURCE_DIR}/bin/runtest.sh" "--simulation")
-
-# the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
-opm_add_application(ebos
-                    SOURCES ebos/ebos.cc
-                    EXE_NAME ebos
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
-
-opm_add_test(SPE1
-  EXE_NAME ebos
-  NO_COMPILE
-  DEPENDS ebos
-  CONDITION opm-common_FOUND AND opm-grid_FOUND
-  DRIVER_ARGS --spe1 "${COMPARE_ECL_COMMAND}")
-
-if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
-opm_add_application(ebos_femistl
-                    SOURCES ebos/ebos_femistl.cc
-                    EXE_NAME ebos_femistl
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
-
-opm_add_application(ebos_fempetsc
-                    SOURCES ebos/ebos_fempetsc.cc
-                    EXE_NAME ebos_fempetsc
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
-endif()
-
-
 
 # the ART to DGF file format conversion utility
 opm_add_application(art2dgf
