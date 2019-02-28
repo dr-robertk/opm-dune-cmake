@@ -63,19 +63,51 @@ endif()
 # the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
 opm_add_application(ebos
                     SOURCES ebos/ebos.cc
-                    EXE_NAME ebos
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+                    EXE_NAME ebos)
+
+opm_add_application(ebos_plain
+                    SOURCES ebos/ebos_plain.cc
+                    EXE_NAME ebos_plain)
+
+opm_add_application(ebos_solvent
+                    SOURCES ebos/ebos_solvent.cc
+                    EXE_NAME ebos_solvent)
+
+opm_add_application(ebos_polymer
+                    SOURCES ebos/ebos_polymer.cc
+                    EXE_NAME ebos_polymer)
+
+opm_add_application(ebos_thermal
+                    SOURCES ebos/ebos_thermal.cc
+                    EXE_NAME ebos_thermal)
+
+opm_add_application(ebos_oilwater
+                    SOURCES ebos/ebos_oilwater.cc
+                    EXE_NAME ebos_oilwater)
+
+opm_add_application(ebos_gasoil
+                    SOURCES ebos/ebos_gasoil.cc
+                    EXE_NAME ebos_gasoil)
+
+add_custom_target(all_ebos)
+add_dependencies(all_ebos "ebos")
+add_dependencies(all_ebos "ebos_solvent")
+add_dependencies(all_ebos "ebos_polymer")
+add_dependencies(all_ebos "ebos_thermal")
+add_dependencies(all_ebos "ebos_oilwater")
+add_dependencies(all_ebos "ebos_gasoil")
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
 opm_add_application(ebos_femistl
                     SOURCES ebos/ebos_femistl.cc
-                    EXE_NAME ebos_femistl
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+                    EXE_NAME ebos_femistl)
 
 opm_add_application(ebos_fempetsc
                     SOURCES ebos/ebos_fempetsc.cc
-                    EXE_NAME ebos_fempetsc
-                    CONDITION opm-common_FOUND AND opm-grid_FOUND)
+                    EXE_NAME ebos_fempetsc)
+
+add_dependencies(all_ebos "ebos_femistl")
+add_dependencies(all_ebos "ebos_fempetsc")
 endif()
 
 opm_add_application(flow
