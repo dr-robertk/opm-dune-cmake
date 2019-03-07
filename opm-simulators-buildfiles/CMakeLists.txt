@@ -6,6 +6,10 @@ cmake_minimum_required(VERSION 3.0.1)
 # set up project and specify the minimum cmake version
 project("opm-simulators" C CXX)
 
+option(BUILD_FLOW "Build the production oriented flow simulator?" OFF)
+option(BUILD_EBOS "Build the research oriented ebos simulator?" ON)
+option(BUILD_EBOS_EXTENSIONS "Build the variants for various extensions of ebos by default?" OFF)
+
 # find the build system (i.e., dune-common) and set cmake's module path
 find_package(dune-common REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
@@ -62,30 +66,37 @@ endif()
 
 # the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
 opm_add_application(ebos
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS}
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos)
 
 opm_add_application(ebos_plain
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_plain.cc
                     EXE_NAME ebos_plain)
 
 opm_add_application(ebos_solvent
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_solvent.cc
                     EXE_NAME ebos_solvent)
 
 opm_add_application(ebos_polymer
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_polymer.cc
                     EXE_NAME ebos_polymer)
 
 opm_add_application(ebos_thermal
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_thermal.cc
                     EXE_NAME ebos_thermal)
 
 opm_add_application(ebos_oilwater
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_oilwater.cc
                     EXE_NAME ebos_oilwater)
 
 opm_add_application(ebos_gasoil
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_gasoil.cc
                     EXE_NAME ebos_gasoil)
 
@@ -111,6 +122,7 @@ add_dependencies(all_ebos "ebos_fempetsc")
 endif()
 
 opm_add_application(flow
+  DEFAULT_ENABLE_IF ${BUILD_FLOW}
   SOURCES
    flow/flow.cpp
    flow/flow_ebos_blackoil.cpp
@@ -121,6 +133,12 @@ opm_add_application(flow
    flow/flow_ebos_energy.cpp
    flow/flow_ebos_oilwater_polymer.cpp
    flow/flow_ebos_oilwater_polymer_injectivity.cpp)
+
+if(TARGET flow)
+  add_dependencies(all_tests "flow")
+  add_dependencies(test-suite "flow")
+  add_dependencies(build_tests "flow")
+endif()
 
 
 opm_recusive_copy_testdata_to_builddir("tests/*.data" "tests/*.DATA" "tests/VFP*")
