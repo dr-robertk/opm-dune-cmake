@@ -9,6 +9,7 @@ project("opm-simulators" C CXX)
 option(BUILD_FLOW "Build the production oriented flow simulator?" OFF)
 option(BUILD_EBOS "Build the research oriented ebos simulator?" ON)
 option(BUILD_EBOS_EXTENSIONS "Build the variants for various extensions of ebos by default?" OFF)
+option(BUILD_EBOS_DEBUG_EXTENSIONS "Build the debugging variants of ebos by default?" OFF)
 
 # find the build system (i.e., dune-common) and set cmake's module path
 find_package(dune-common REQUIRED)
@@ -70,6 +71,7 @@ opm_add_application(ebos
                     SOURCES ebos/ebos.cc
                     EXE_NAME ebos)
 
+# ebos with some model extensions
 opm_add_application(ebos_plain
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_plain.cc
@@ -99,6 +101,12 @@ opm_add_application(ebos_gasoil
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_gasoil.cc
                     EXE_NAME ebos_gasoil)
+
+# ebos variants for debugging
+opm_add_application(ebos_altidx
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_DEBUG_EXTENSIONS}
+                    SOURCES ebos/ebos_altidx.cc
+                    EXE_NAME ebos_altidx)
 
 add_custom_target(all_ebos)
 add_dependencies(all_ebos "ebos")
