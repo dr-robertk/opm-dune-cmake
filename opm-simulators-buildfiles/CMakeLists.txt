@@ -72,11 +72,6 @@ opm_add_application(ebos
                     EXE_NAME ebos)
 
 # ebos with some model extensions
-opm_add_application(ebos_plain
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_plain.cc
-                    EXE_NAME ebos_plain)
-
 opm_add_application(ebos_solvent
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
                     SOURCES ebos/ebos_solvent.cc
@@ -103,6 +98,14 @@ opm_add_application(ebos_gasoil
                     EXE_NAME ebos_gasoil)
 
 # ebos variants for debugging
+
+# variant that uses the default ewoms linear solver and the toy ECL well model
+opm_add_application(ebos_plain
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_DEBUG_EXTENSIONS}
+                    SOURCES ebos/ebos_plain.cc
+                    EXE_NAME ebos_plain)
+
+# variant that uses different phase and component indices than the others
 opm_add_application(ebos_altidx
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_DEBUG_EXTENSIONS}
                     SOURCES ebos/ebos_altidx.cc
