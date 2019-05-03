@@ -66,37 +66,56 @@ if(opm-tests_FOUND)
 endif()
 
 # the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
+add_library(ebos_libblackoil STATIC EXCLUDE_FROM_ALL ebos/ebos_blackoil.cc)
 opm_add_application(ebos
                     DEFAULT_ENABLE_IF ${BUILD_EBOS}
-                    SOURCES ebos/ebos.cc
+                    SOURCES ebos/ebos_main.cc
+                    LIBRARIES ebos_libblackoil
                     EXE_NAME ebos)
 
-# ebos with some model extensions
+#add_library(ebos_solvent STATIC EXCLUDE_FROM_ALL ebos/ebos_solvent.cc)
+add_library(ebos_libsolvent STATIC EXCLUDE_FROM_ALL ebos/ebos_solvent.cc)
 opm_add_application(ebos_solvent
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_solvent.cc
+                    SOURCES ebos/ebos_solvent_main.cc
+                    LIBRARIES ebos_libsolvent
                     EXE_NAME ebos_solvent)
 
+add_library(ebos_libpolymer STATIC EXCLUDE_FROM_ALL ebos/ebos_polymer.cc)
 opm_add_application(ebos_polymer
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_polymer.cc
+                    SOURCES ebos/ebos_polymer_main.cc
+                    LIBRARIES ebos_libpolymer
                     EXE_NAME ebos_polymer)
 
+add_library(ebos_libthermal STATIC EXCLUDE_FROM_ALL ebos/ebos_thermal.cc)
 opm_add_application(ebos_thermal
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_thermal.cc
+                    SOURCES ebos/ebos_thermal_main.cc
+                    LIBRARIES ebos_libthermal
                     EXE_NAME ebos_thermal)
 
+add_library(ebos_liboilwater STATIC EXCLUDE_FROM_ALL ebos/ebos_oilwater.cc)
 opm_add_application(ebos_oilwater
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_oilwater.cc
+                    SOURCES ebos/ebos_oilwater_main.cc
+                    LIBRARIES ebos_liboilwater
                     EXE_NAME ebos_oilwater)
 
+add_library(ebos_libgasoil STATIC EXCLUDE_FROM_ALL ebos/ebos_gasoil.cc)
 opm_add_application(ebos_gasoil
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_gasoil.cc
+                    SOURCES ebos/ebos_gasoil_main.cc
+                    LIBRARIES ebos_libgasoil
                     EXE_NAME ebos_gasoil)
 
+# multiplexed ebos with most of the above model extensions
+opm_add_application(mebos
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
+                    SOURCES ebos/mebos_main.cc
+                    LIBRARIES ebos_libblackoil ebos_libpolymer ebos_libsolvent ebos_libthermal ebos_liboilwater ebos_libgasoil
+                    EXE_NAME mebos)
+                 
 # ebos variants for debugging
 
 # variant that uses the default ewoms linear solver and the toy ECL well model
@@ -113,6 +132,7 @@ opm_add_application(ebos_altidx
 
 add_custom_target(all_ebos)
 add_dependencies(all_ebos "ebos")
+add_dependencies(all_ebos "mebos")
 add_dependencies(all_ebos "ebos_solvent")
 add_dependencies(all_ebos "ebos_polymer")
 add_dependencies(all_ebos "ebos_thermal")
