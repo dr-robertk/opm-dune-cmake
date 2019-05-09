@@ -136,6 +136,7 @@ opm_add_application(flow
   DEFAULT_ENABLE_IF ${BUILD_FLOW}
   SOURCES
    flow/flow.cpp
+   flow/flow_blackoil_dunecpr.cpp
    flow/flow_ebos_blackoil.cpp
    flow/flow_ebos_gasoil.cpp
    flow/flow_ebos_oilwater.cpp
