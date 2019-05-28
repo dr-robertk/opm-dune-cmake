@@ -47,17 +47,14 @@ if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
 endif()
 
 add_library(testutil STATIC
-  examples/test_util/EclFile.cpp
-  examples/test_util/EclFilesComparator.cpp
-  examples/test_util/EclOutput.cpp
-  examples/test_util/EclRegressionTest.cpp
-  examples/test_util/EclUtil.cpp
-  examples/test_util/EGrid.cpp
-  examples/test_util/ERft.cpp
-  examples/test_util/ERst.cpp
-  examples/test_util/ESmry.cpp)
+  test_util/Deviation.hpp
+  test_util/EclFilesComparator.cpp
+  test_util/EclFilesComparator.hpp
+  test_util/EclRegressionTest.cpp
+  test_util/EclRegressionTest.hpp
+)
 target_link_libraries(testutil ecl)
-add_executable(compareECL examples/test_util/compareECL.cpp)
+add_executable(compareECL test_util/compareECL.cpp)
 target_link_libraries(compareECL testutil opmcommon)
 install(TARGETS compareECL DESTINATION bin)
 
