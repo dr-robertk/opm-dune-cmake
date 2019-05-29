@@ -136,7 +136,6 @@ opm_add_application(flow
   DEFAULT_ENABLE_IF ${BUILD_FLOW}
   SOURCES
    flow/flow.cpp
-   flow/flow_blackoil_dunecpr.cpp
    flow/flow_ebos_blackoil.cpp
    flow/flow_ebos_gasoil.cpp
    flow/flow_ebos_oilwater.cpp
@@ -145,6 +144,12 @@ opm_add_application(flow
    flow/flow_ebos_energy.cpp
    flow/flow_ebos_oilwater_polymer.cpp
    flow/flow_ebos_oilwater_polymer_injectivity.cpp)
+
+opm_add_application(flow_blackoil_dunecpr
+  DEFAULT_ENABLE_IF ${BUILD_FLOW}
+  SOURCES
+  flow/flow_blackoil_dunecpr.cpp
+  )
 
 if(TARGET flow)
   add_dependencies(all_tests "flow")
