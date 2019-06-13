@@ -62,10 +62,10 @@ opm_add_application(art2dgf
 
 add_dependencies(test-suite art2dgf)
 
-opm_add_test(art2dgf
-  NO_COMPILE
-  DRIVER_ARGS --plain
-  TEST_ARGS "data/fracture-raw.art")
+#opm_add_test(art2dgf
+#  NO_COMPILE
+#  DRIVER_ARGS --plain
+#  TEST_ARGS "data/fracture-raw.art")
 
 # EQUIL init tests
 opm_add_test(test_equil
