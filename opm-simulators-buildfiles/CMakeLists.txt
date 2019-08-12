@@ -65,58 +65,33 @@ if(opm-tests_FOUND)
   include (${CMAKE_CURRENT_SOURCE_DIR}/compareECLFiles.cmake)
 endif()
 
-# the general-purpose ECL simulator ("ebos" == "&ecl &black-&oil &simulator)
-add_library(ebos_libblackoil STATIC EXCLUDE_FROM_ALL ebos/ebos_blackoil.cc)
+set(MEBOS_TARGETS "")
+foreach(EXT blackoil solvent polymer foam gasoil oilwater thermal)
+  add_library(ebos_lib${EXT} OBJECT EXCLUDE_FROM_ALL ebos/ebos_${EXT}.cc)
+  target_include_directories(ebos_lib${EXT} PRIVATE ${ecl_INCLUDE_DIRS})
+  list(APPEND MEBOS_TARGETS $<TARGET_OBJECTS:ebos_lib${EXT}>)
+endforeach()
+
+# blackoil ebos
 opm_add_application(ebos
                     DEFAULT_ENABLE_IF ${BUILD_EBOS}
-                    SOURCES ebos/ebos_main.cc
-                    LIBRARIES ebos_libblackoil
-                    EXE_NAME ebos)
+                    SOURCES ebos/ebos_main.cc $<TARGET_OBJECTS:ebos_libblackoil>)
 
-#add_library(ebos_solvent STATIC EXCLUDE_FROM_ALL ebos/ebos_solvent.cc)
-add_library(ebos_libsolvent STATIC EXCLUDE_FROM_ALL ebos/ebos_solvent.cc)
-opm_add_application(ebos_solvent
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_solvent_main.cc
-                    LIBRARIES ebos_libsolvent
-                    EXE_NAME ebos_solvent)
-
-add_library(ebos_libpolymer STATIC EXCLUDE_FROM_ALL ebos/ebos_polymer.cc)
-opm_add_application(ebos_polymer
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_polymer_main.cc
-                    LIBRARIES ebos_libpolymer
-                    EXE_NAME ebos_polymer)
-
-add_library(ebos_libthermal STATIC EXCLUDE_FROM_ALL ebos/ebos_thermal.cc)
-opm_add_application(ebos_thermal
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_thermal_main.cc
-                    LIBRARIES ebos_libthermal
-                    EXE_NAME ebos_thermal)
-
-add_library(ebos_liboilwater STATIC EXCLUDE_FROM_ALL ebos/ebos_oilwater.cc)
-opm_add_application(ebos_oilwater
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_oilwater_main.cc
-                    LIBRARIES ebos_liboilwater
-                    EXE_NAME ebos_oilwater)
-
-add_library(ebos_libgasoil STATIC EXCLUDE_FROM_ALL ebos/ebos_gasoil.cc)
-opm_add_application(ebos_gasoil
-                    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/ebos_gasoil_main.cc
-                    LIBRARIES ebos_libgasoil
-                    EXE_NAME ebos_gasoil)
+# add specialized ebos simulators with some black-oil extension
+foreach(EXT solvent polymer foam gasoil oilwater thermal)
+  opm_add_application(ebos_${EXT}
+    DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
+    SOURCES ebos/ebos_${EXT}_main.cc $<TARGET_OBJECTS:ebos_lib${EXT}>)
+endforeach()
 
 # multiplexed ebos with most of the above model extensions
 opm_add_application(mebos
                     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
-                    SOURCES ebos/mebos_main.cc
-                    LIBRARIES ebos_libblackoil ebos_libpolymer ebos_libsolvent ebos_libthermal ebos_liboilwater ebos_libgasoil
-                    EXE_NAME mebos)
-                 
+                    SOURCES ebos/mebos_main.cc ${MEBOS_TARGETS})
+
+######
 # ebos variants for debugging
+######
 
 # variant that uses the default ewoms linear solver and the toy ECL well model
 opm_add_application(ebos_plain
@@ -135,6 +110,7 @@ add_dependencies(all_ebos "ebos")
 add_dependencies(all_ebos "mebos")
 add_dependencies(all_ebos "ebos_solvent")
 add_dependencies(all_ebos "ebos_polymer")
+add_dependencies(all_ebos "ebos_foam")
 add_dependencies(all_ebos "ebos_thermal")
 add_dependencies(all_ebos "ebos_oilwater")
 add_dependencies(all_ebos "ebos_gasoil")
@@ -159,6 +135,7 @@ opm_add_application(flow
    flow/flow_ebos_blackoil.cpp
    flow/flow_ebos_gasoil.cpp
    flow/flow_ebos_oilwater.cpp
+   flow/flow_ebos_foam.cpp
    flow/flow_ebos_polymer.cpp
    flow/flow_ebos_solvent.cpp
    flow/flow_ebos_energy.cpp
