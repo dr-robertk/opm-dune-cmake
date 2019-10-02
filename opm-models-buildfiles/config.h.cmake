@@ -1,4 +1,4 @@
-/* begin ewoms
+/* begin opm-models
    put the definitions for config.h specific to
    your project here. Everything above will be
    overwritten
@@ -33,23 +33,23 @@
 /* Specify if the HWLOC process binding library */
 #cmakedefine HAVE_HWLOC 1
 
-/* Define to the version of ewoms */
-#define EWOMS_VERSION "${EWOMS_VERSION_STRING}"
+/* Define to the version of opm-models */
+#define OPM_MODELS_VERSION "${OPM_MODELS_VERSION_STRING}"
 
-/* Define to the major version of ewoms */
-#define EWOMS_VERSION_MAJOR ${EWOMS_VERSION_MAJOR}
+/* Define to the major version of opm-models */
+#define OPM_MODELS_VERSION_MAJOR ${OPM_MODELS_VERSION_MAJOR}
 
-/* Define to the minor version of ewoms */
-#define EWOMS_VERSION_MINOR ${EWOMS_VERSION_MINOR}
+/* Define to the minor version of opm-models */
+#define OPM_MODELS_VERSION_MINOR ${OPM_MODELS_VERSION_MINOR}
 
-/* Define to the revision of ewoms */
-#define EWOMS_VERSION_REVISION ${EWOMS_VERSION_REVISION}
+/* Define to the revision of opm-models */
+#define OPM_MODELS_VERSION_REVISION ${OPM_MODELS_VERSION_REVISION}
 
-/* Define to the codename of ewoms */
-#define EWOMS_VERSION_CODENAME "${EWOMS_VERSION_CODENAME}"
+/* Define to the codename of opm-models */
+#define OPM_MODELS_VERSION_CODENAME "${OPM_MODELS_VERSION_CODENAME}"
 
 /* begin bottom */
 
 /* end bottom */
 
-/* end ewoms */
+/* end opm-models */

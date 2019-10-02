@@ -118,7 +118,7 @@ case "$MODULE_NAME" in
     "opm-common" | \
     "opm-grid" | \
     "opm-material" | \
-    "ewoms" | \
+    "opm-models" | \
     "chiwoms" | \
     "opm-simulators" | \
     "opm-upscaling")

@@ -44,12 +44,12 @@ if(NOT EXISTS "${opm-models_DUNE_MODULE_FILE}")
   message(FATAL_ERROR "File '${opm-models_DUNE_MODULE_FILE}' does not exist!")
 endif()
 
-extract_line("Codename:" EWOMS_VERSION_CODENAME "${opm-models_DUNE_MODULE_FILE}")
-if(EWOMS_VERSION_CODENAME)
-  set(EWOMS_VERSION_STRING "${EWOMS_VERSION} (\"${EWOMS_VERSION_CODENAME}\")")
-  string(REPLACE "\"" "\\\"" EWOMS_VERSION_STRING "${EWOMS_VERSION_STRING}")
+extract_line("Codename:" OPM_MODELS_VERSION_CODENAME "${opm-models_DUNE_MODULE_FILE}")
+if(OPM_MODELS_VERSION_CODENAME)
+  set(OPM_MODELS_VERSION_STRING "${OPM_MODELS_VERSION} (\"${OPM_MODELS_VERSION_CODENAME}\")")
+  string(REPLACE "\"" "\\\"" OPM_MODELS_VERSION_STRING "${OPM_MODELS_VERSION_STRING}")
 else()
-  set(EWOMS_VERSION_STRING "${EWOMS_VERSION}")
+  set(OPM_MODELS_VERSION_STRING "${OPM_MODELS_VERSION}")
 endif()
 
 # eWoms comes with its custom test driver script
