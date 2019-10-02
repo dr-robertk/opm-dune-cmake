@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.0.1)
 
 # set up project and specify the minimum cmake version
-project("ewoms" C CXX)
+project("opm-models" C CXX)
 
 # find the build system (i.e., dune-common) and set cmake's module path
 find_package(dune-common REQUIRED)
@@ -19,9 +19,9 @@ dune_project()
 # include the additional generic OPM cmake macros
 include(OpmMacros)
 
-# recursively mark all header files beneath the "ewoms" directory for
+# recursively mark all header files beneath the "opm-models" directory for
 # installation.
-opm_recusive_export_all_headers("ewoms")
+opm_recusive_export_all_headers("opm-models")
 
 # the cmake modules get a special treatment
 opm_export_cmake_modules()
@@ -37,14 +37,14 @@ find_package(OpmOutputUtils)
 opm_recusive_copy_testdata_to_builddir("tests/data/*")
 file(COPY "${CMAKE_SOURCE_DIR}/tests/data/" DESTINATION "${CMAKE_BINARY_DIR}/data")
 
-# extract the code name of the current ewoms revision from the
+# extract the code name of the current opm-models revision from the
 # corresponding dune.module file
-set(ewoms_DUNE_MODULE_FILE "${CMAKE_SOURCE_DIR}/dune.module")
-if(NOT EXISTS "${ewoms_DUNE_MODULE_FILE}")
-  message(FATAL_ERROR "File '${ewoms_DUNE_MODULE_FILE}' does not exist!")
+set(opm-models_DUNE_MODULE_FILE "${CMAKE_SOURCE_DIR}/dune.module")
+if(NOT EXISTS "${opm-models_DUNE_MODULE_FILE}")
+  message(FATAL_ERROR "File '${opm-models_DUNE_MODULE_FILE}' does not exist!")
 endif()
 
-extract_line("Codename:" EWOMS_VERSION_CODENAME "${ewoms_DUNE_MODULE_FILE}")
+extract_line("Codename:" EWOMS_VERSION_CODENAME "${opm-models_DUNE_MODULE_FILE}")
 if(EWOMS_VERSION_CODENAME)
   set(EWOMS_VERSION_STRING "${EWOMS_VERSION} (\"${EWOMS_VERSION_CODENAME}\")")
   string(REPLACE "\"" "\\\"" EWOMS_VERSION_STRING "${EWOMS_VERSION_STRING}")
