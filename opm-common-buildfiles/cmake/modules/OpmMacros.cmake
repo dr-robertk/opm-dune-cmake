@@ -330,7 +330,7 @@ function(opm_add_application AppName)
       endif()
     endforeach()
   endif()
-  
+
   # don't build the app by _default_ if either BUILD_APPLICATIONS or
   # the condition to build it by default is false, i.e., when simply
   # typing 'make' such applications are not build, but they can still

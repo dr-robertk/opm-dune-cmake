@@ -66,6 +66,7 @@ if(opm-tests_FOUND)
 endif()
 
 set(MEBOS_TARGETS "")
+#foreach(EXT blackoil solvent polymer foam gasoil oilwater oilwaterpolymer thermal)
 foreach(EXT blackoil solvent polymer foam gasoil oilwater thermal)
   add_library(ebos_lib${EXT} OBJECT EXCLUDE_FROM_ALL ebos/ebos_${EXT}.cc)
   target_include_directories(ebos_lib${EXT} PRIVATE ${ecl_INCLUDE_DIRS})
@@ -77,7 +78,14 @@ opm_add_application(ebos
                     DEFAULT_ENABLE_IF ${BUILD_EBOS}
                     SOURCES ebos/ebos_main.cc $<TARGET_OBJECTS:ebos_libblackoil>)
 
+# blackoil ebos
+opm_add_application(ebos_blackoil_petsc
+                    DEFAULT_ENABLE_IF ${BUILD_EBOS}
+                    SOURCES ebos/ebos_main.cc $<TARGET_OBJECTS:ebos_libblackoil>)
+target_compile_definitions(ebos_blackoil_petsc PUBLIC "USE_PETSC")
+
 # add specialized ebos simulators with some black-oil extension
+#foreach(EXT solvent polymer foam gasoil oilwater oilwaterpolymer thermal)
 foreach(EXT solvent polymer foam gasoil oilwater thermal)
   opm_add_application(ebos_${EXT}
     DEFAULT_ENABLE_IF ${BUILD_EBOS_EXTENSIONS}
@@ -113,6 +121,7 @@ add_dependencies(all_ebos "ebos_polymer")
 add_dependencies(all_ebos "ebos_foam")
 add_dependencies(all_ebos "ebos_thermal")
 add_dependencies(all_ebos "ebos_oilwater")
+#add_dependencies(all_ebos "ebos_oilwaterpolymer")
 add_dependencies(all_ebos "ebos_gasoil")
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/ebos/ebos_femistl.cc")
