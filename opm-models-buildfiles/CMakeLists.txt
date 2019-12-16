@@ -67,16 +67,6 @@ add_dependencies(test-suite art2dgf)
 #  DRIVER_ARGS --plain
 #  TEST_ARGS "data/fracture-raw.art")
 
-# EQUIL init tests
-opm_add_test(test_equil
-  DRIVER_ARGS --plain
-  CONDITION opm-common_FOUND AND opm-grid_FOUND)
-
-# Output ECL tests
-opm_add_test(test_ecl_output
-             DRIVER_ARGS --plain
-             CONDITION opm-common_FOUND AND opm-grid_FOUND)
-
 # add targets for all tests of the models. we add the water-air test
 # first because it take longest and so that we don't have to wait for
 # them as long for parallel test runs
