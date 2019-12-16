@@ -116,11 +116,10 @@ get_source_dir
 extract_module_name
 case "$MODULE_NAME" in
     "opm-common" | \
-    "opm-output" | \
     "opm-grid" | \
     "opm-material" | \
-    "opm-core" | \
-    "ewoms" | \
+    "opm-models" | \
+    "chiwoms" | \
     "opm-simulators" | \
     "opm-upscaling")
         echo "Detected OPM module '$MODULE_NAME' in directory '$SOURCE_DIR'. Using wrapped cmake."

@@ -27,6 +27,7 @@
 
 /* Hack around some ugly code in the unit tests. */
 #define HAVE_DYNAMIC_BOOST_TEST 1
+#define BOOST_TEST_DYN_LINK 1
 
 /* end private */
 
@@ -42,18 +43,10 @@
 /* Define to the revision of opm-common */
 #define OPM_COMMON_VERSION_REVISION ${OPM_COMMON_VERSION_REVISION}
 
-/* Specify whether OpenMP is available or not */
-#cmakedefine HAVE_OPENMP 1
-
-/* Define whether valgrind is available */
-#cmakedefine HAVE_VALGRIND 1
-
-/* Specify wheter the pthreads library is available or not. This is supposed */
-/* to be handled by dune-common, but since this seems not to be the case, */
-/* let's work around it here */
-#ifndef HAVE_PTHREAD
-#cmakedefine HAVE_PTHREAD 1
-#endif
+/* ECL I/O support is hardcoded into this build system for this module */
+/* (ECL I/O is the whole point of the opm-common module!) */
+#define HAVE_ECL_INPUT 1
+#define HAVE_ECL_OUTPUT 1
 
 /* begin bottom */
 

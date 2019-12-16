@@ -1,0 +1,1 @@
+../../../opm-common-buildfiles/cmake/modules/OpmMacros.cmake

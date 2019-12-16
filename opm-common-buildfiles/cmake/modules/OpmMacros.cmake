@@ -33,10 +33,18 @@ option(BUILD_APPLICATIONS "Build the applications shipped with this module" ON)
 option(ADD_DISABLED_CTESTS "Add the tests which are disabled due to failed preconditions to the ctest output (this makes ctest return an error if such a test is present)" ON)
 mark_as_advanced(ADD_DISABLED_CTESTS)
 
-# add "test-suite" and "build_tests" targets if they does not already
-# exist. the first is used by the OPM-traditional build system to
-# build all tests, the second is used by the DUNE build system for the
-# same purpose
+# add "all_tests", "all_applications" "test-suite" and "build_tests"
+# targets if they does not already exist. "test-suite" is used by the
+# traditional OPM build system to build all tests, the "build_tests"
+# is the target which the DUNE build system uses for the same purpose
+if(NOT TARGET all_tests)
+  add_custom_target(all_tests)
+endif()
+
+if(NOT TARGET all_applications)
+  add_custom_target(all_applications)
+endif()
+
 if(NOT TARGET test-suite)
   add_custom_target(test-suite)
 endif()
@@ -241,13 +249,8 @@ function(opm_add_test TestName)
     endif()
 
     if (NOT CURTEST_NO_COMPILE)
-      if(NOT TARGET test-suite)
-        add_custom_target(test-suite)
-      endif()
-      if(NOT TARGET build_tests)
-        add_custom_target(build_tests)
-      endif()
       add_dependencies(test-suite "${CURTEST_EXE_NAME}")
+      add_dependencies(all_tests "${CURTEST_EXE_NAME}")
       add_dependencies(build_tests "${CURTEST_EXE_NAME}")
     endif()
 
@@ -257,7 +260,7 @@ function(opm_add_test TestName)
     # CDash dashboard. it this is removed, the test is just silently
     # ignored.
     if (NOT CURTEST_ONLY_COMPILE AND ADD_DISABLED_CTESTS)
-      add_test(${TestName} skip_test_dummy)
+      add_test(${TestName}  ${CURTEST_DRIVER} --skip)
 
       # return code 77 should be interpreted as skipped test
       set_tests_properties(${TestName} PROPERTIES SKIP_RETURN_CODE 77)
@@ -266,38 +269,114 @@ function(opm_add_test TestName)
   endif()
 endfunction()
 
-# Add an application. This macro takes the same arguments as
-# opm_add_test() but applications are always compiled if CONDITION
-# evaluates to true and that applications are not added to the test
-# suite.
+# Add an application. This function takes most of the arguments of
+# opm_add_test() but applications are collected by the
+# "all_applications" instead of "all_tests".
 #
-# opm_add_application(AppName
-#                     [EXE_NAME AppExecutableName]
-#                     [CONDITION ConditionalExpression]
-#                     [SOURCES SourceFile1 SourceFile2 ...])
+# Synopsis:
+#       opm_add_application(AppName [OPTIONS])
+#
+# Parameters:
+#       AppName            Name of application
+#       DEFAULT_ENABLE_IF  Only enable by default if a given condition is true (optional)
+#       EXE_NAME           Name of application executable (optional, default: ./bin/${ApplicationName})
+#       CONDITION          Condition to enable application (optional, cmake code)
+#       DEPENDS            Targets which the application depends on (optional)
+#       SOURCES            Source files for the application (optional, default: ${EXE_NAME}.cpp)
+#       INCLUDE_DIRS       Additional directories to look for include files (optional)
+#       LIBRARIES          Libraries to link application against (optional)
+#
+# Example:
+#
+# opm_add_application(funky_application
+#              DEFAULT_ENABLE_IF FUNKY_LIBRARY_FOUND
+#              CONDITION FUNKY_GRID_FOUND
+#              SOURCES applications/MyFunkyApplication.cpp
+#              LIBRARIES -lgmp -lm)
 function(opm_add_application AppName)
-  opm_add_test(${AppName} ${ARGN}
-    DEFAULT_ENABLE_IF BUILD_APPLICATIONS
-    ONLY_COMPILE)
+  cmake_parse_arguments(CURAPP
+                        "" # flags
+                        "EXE_NAME" # one value args
+                        "CONDITION;DEFAULT_ENABLE_IF;DEPENDS;SOURCES;LIBRARIES;INCLUDE_DIRS" # multi-value args
+                        ${ARGN})
 
-  if (BUILD_APPLICATIONS)
-    # only install applications if they are built by default
-    if(TARGET "${AppName}")
-      install(TARGETS "${AppName}" DESTINATION bin)
+  # set the default values for optional parameters
+  if (NOT CURAPP_EXE_NAME)
+    set(CURAPP_EXE_NAME ${AppName})
+  endif()
+
+  # do not add a target at all the preconditions are not met
+  if (NOT ("AND OR ${CURAPP_CONDITION}" STREQUAL "AND OR "))
+    if ((NOT CURAPP_CONDITION))
+      return()
     endif()
   endif()
 
-  if(NOT TARGET apps)
-    add_custom_target(apps)
-  endif()
-  if(NOT TARGET applications)
-    add_custom_target(applications)
+  if (NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+  endif ()
+
+  # try to auto-detect the name of the source file if SOURCES are not
+  # explicitly specified.
+  if (NOT CURAPP_SOURCES)
+    set(CURAPP_SOURCES "")
+    set(_SDir "${PROJECT_SOURCE_DIR}")
+    foreach(CURAPP_CANDIDATE "${CURAPP_EXE_NAME}.cpp"
+                              "${CURAPP_EXE_NAME}.cc"
+                              "applications/${CURAPP_EXE_NAME}.cpp"
+                              "applications/${CURAPP_EXE_NAME}.cc")
+      if (EXISTS "${_SDir}/${CURAPP_CANDIDATE}")
+        set(CURAPP_SOURCES "${_SDir}/${CURAPP_CANDIDATE}")
+      endif()
+    endforeach()
   endif()
 
-  if (TARGET "${AppName}")
-    add_dependencies(apps "${AppName}")
-    add_dependencies(applications "${AppName}")
+  # don't build the app by _default_ if either BUILD_APPLICATIONS or
+  # the condition to build it by default is false, i.e., when simply
+  # typing 'make' such applications are not build, but they can still
+  # be build using 'make all_applications' or 'make $APP_NAME'
+  set(CURAPP_EXCLUDE_FROM_ALL "")
+  if (NOT BUILD_APPLICATIONS)
+    set(CURAPP_EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+  elseif (NOT ("AND OR ${CURAPP_DEFAULT_ENABLE_IF}" STREQUAL "AND OR "))
+    if (NOT ${CURAPP_DEFAULT_ENABLE_IF})
+      set(CURAPP_EXCLUDE_FROM_ALL "EXCLUDE_FROM_ALL")
+    endif()
   endif()
+
+  # the libraries to link against. the libraries produced by the
+  # current module are always linked against
+  get_property(DUNE_MODULE_LIBRARIES GLOBAL PROPERTY DUNE_MODULE_LIBRARIES)
+  if (NOT CURAPP_LIBRARIES)
+    set(CURAPP_LIBRARIES "${DUNE_MODULE_LIBRARIES}")
+  else()
+    set(CURAPP_LIBRARIES "${CURAPP_LIBRARIES};${DUNE_MODULE_LIBRARIES}")
+  endif()
+
+  # the additional include directories
+  get_property(DUNE_MODULE_INCLUDE_DIRS GLOBAL PROPERTY DUNE_INCLUDE_DIRS)
+  if (NOT CURAPP_INCLUDE_DIRS)
+    set(CURAPP_INCLUDE_DIRS "${DUNE_INCLUDE_DIRS}")
+  else()
+    set(CURAPP_INCLUDE_DIRS "${CURAPP_INCLUDE_DIRS};${DUNE_MODULE_INCLUDE_DIRS}")
+  endif()
+
+  # instruct cmake to add a target for the application
+  add_executable("${CURAPP_EXE_NAME}" ${CURAPP_EXCLUDE_FROM_ALL} ${CURAPP_SOURCES})
+  target_link_libraries (${CURAPP_EXE_NAME} ${CURAPP_LIBRARIES})
+  target_include_directories(${CURAPP_EXE_NAME} PRIVATE ${CURAPP_INCLUDE_DIRS})
+
+  if(CURAPP_DEPENDS)
+    add_dependencies("${CURAPP_EXE_NAME}" ${CURAPP_DEPENDS})
+  endif()
+
+  # install binary if it is build by default
+  if("AND OR ${CURAPP_EXCLUDE_FROM_ALL}" STREQUAL "AND OR ")
+    install(TARGETS "${CURAPP_EXE_NAME}" DESTINATION bin)
+  endif()
+
+  # add the application to the custom "all_applications" target
+  add_dependencies(all_applications "${CURAPP_EXE_NAME}")
 endfunction()
 
 # macro to set the default test driver script and the its default
@@ -379,7 +458,14 @@ function(opm_recusive_copy_testdata)
 
     foreach(SOURCE_FILE ${TMP})
       get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
-      file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/${DIRNAME}")
+      get_filename_component(FILENAME "${SOURCE_FILE}" NAME)
+
+      if (NOT EXISTS "${CMAKE_BINARY_DIR}/${DIRNAME}/${FILENAME}")
+        file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${DIRNAME}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink
+          "${CMAKE_SOURCE_DIR}/${SOURCE_FILE}"
+          "${CMAKE_BINARY_DIR}/${DIRNAME}/${FILENAME}")
+      endif()
     endforeach()
   endforeach()
 endfunction()
@@ -390,7 +476,14 @@ function(opm_recusive_copy_testdata_to_builddir)
 
     foreach(SOURCE_FILE ${TMP})
       get_filename_component(DIRNAME "${SOURCE_FILE}" DIRECTORY)
-      file(COPY "${SOURCE_FILE}" DESTINATION "${CMAKE_BINARY_DIR}/")
+      get_filename_component(FILENAME "${SOURCE_FILE}" NAME)
+
+      if (NOT EXISTS "${CMAKE_BINARY_DIR}/${FILENAME}")
+        file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${DIRNAME}")
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E create_symlink
+          "${CMAKE_SOURCE_DIR}/${SOURCE_FILE}"
+          "${CMAKE_BINARY_DIR}/${FILENAME}")
+      endif()
     endforeach()
   endforeach()
 endfunction()
