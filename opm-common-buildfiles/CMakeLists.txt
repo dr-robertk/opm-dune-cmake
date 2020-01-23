@@ -10,6 +10,14 @@ project("opm-common" C CXX)
 find_package(dune-common REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${dune-common_MODULE_PATH})
 
+option(ENABLE_ECL_INPUT "Enable eclipse input support?" ON)
+option(ENABLE_ECL_OUTPUT "Enable eclipse output support?" ON)
+option(ENABLE_MOCKSIM "Build the mock simulator for io testing" ON)
+option(OPM_ENABLE_PYTHON "Enable python bindings?" OFF)
+option(OPM_INSTALL_PYTHON "Enable python bindings?" OFF)
+option(OPM_ENABLE_EMBEDDED_PYTHON "Enable python bindings?" OFF)
+option(ENABLE_3DPROPS_TESTING "Enable the in-constructor testing of 3D properties" OFF)
+
 # include the dune macros
 include(DuneMacros)
 
@@ -32,8 +40,20 @@ dune_enable_all_packages()
 # Keyword generator
 include(GenerateKeywords.cmake)
 
+if(ENABLE_ECL_INPUT)
+  # Keyword generation
+  include(GenerateKeywords.cmake)
+
+  # Append generated sources
+  list(INSERT opm-common_SOURCES 0 ${PROJECT_BINARY_DIR}/ParserInit.cpp)
+  foreach (name A B C D E F G H I J K L M N O P Q R S T U V W X Y Z)
+      list(INSERT opm-common_SOURCES 0 ${PROJECT_BINARY_DIR}/ParserKeywords/${name}.cpp)
+  endforeach()
+endif()
+
+
 # Append generated sources
-list(APPEND MAIN_SOURCE_FILES ${PROJECT_BINARY_DIR}/ParserKeywords.cpp)
+#list(APPEND MAIN_SOURCE_FILES ${PROJECT_BINARY_DIR}/ParserKeywords.cpp)
 
 # read in the file lists of CMakeLists_files.txt
 opm_read_listsfile()
